@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aaron Ocio | Artist Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- BASIC SETUP --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0e0e0e; color: white; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+        /* --- INTRO SCREEN --- */
+        #intro {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .intro-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            letter-spacing: 8px;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* --- MAIN CONTENT --- */
+        #main-content {
+            opacity: 0;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 { font-size: 3.5rem; color: #ff0050; text-transform: uppercase; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1rem; color: #888; margin-bottom: 50px; }
+
+        /* --- GALLERY SECTION --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto 80px auto;
+        }
+
+        .card {
+            background: #1a1a1a;
+            height: 250px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #333;
+            transition: 0.4s ease;
+            cursor: pointer;
+        }
+
+        .card:hover { border-color: #ff0050; transform: translateY(-10px); box-shadow: 0 10px 30px rgba(255, 0, 80, 0.2); }
+        .card i { font-size: 2rem; margin-bottom: 10px; }
+
+        /* --- MANUAL UPDATE LOG (CHANGELOG) --- */
+        .changelog-container {
+            max-width: 800px;
+            margin: 100px auto;
+            text-align: left;
+        }
+
+        .changelog-container h2 { color: #ff0050; font-size: 2rem; margin-bottom: 30px; text-align: center; }
+
+        .timeline { position: relative; border-left: 2px solid #333; padding-left: 30px; margin-left: 20px; }
+
+        .timeline-item { position: relative; margin-bottom: 40px; }
+
+        .timeline-dot {
+            position: absolute; left: -41px; top: 5px;
+            width: 20px; height: 20px;
+            background: #ff0050; border-radius: 50%;
+            border: 4px solid #0e0e0e;
+            box-shadow: 0 0 10px #ff0050;
+        }
+
+        .timeline-date { font-size: 0.85rem; color: #666; font-weight: bold; margin-bottom: 5px; }
+
+        .timeline-content {
+            background: #161616; padding: 20px;
+            border-radius: 12px; border: 1px solid #222;
+        }
+
+        .timeline-content h3 { font-size: 1.1rem; color: #fff; margin-bottom: 10px; }
+        .timeline-content ul { list-style: none; color: #aaa; font-size: 0.95rem; }
+        .timeline-content li::before { content: "• "; color: #ff0050; }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro">
+        <h1 class="intro-text">AARON OCIO</h1>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <h1>Aaron Ocio</h1>
+            <p class="subtitle">Digital Artist • Musician • Developer</p>
+        </header>
+
+        <section class="gallery">
+            <div class="card"><span>🎸</span><br>Guitars</div>
+            <div class="card"><span>🎵</span><br>Music Clips</div>
+            <div class="card"><span>💻</span><br>Tech Projects</div>
+        </section>
+
+        <section class="changelog-container">
+            <h2>🚀 Project Evolution</h2>
+            <div class="timeline">
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">March 31, 2026</div>
+                    <div class="timeline-content">
+                        <h3>v1.2 - Interactive Portfolio</h3>
+                        <ul>
+                            <li>Added a custom manual update log section.</li>
+                            <li>Enhanced intro animation with GSAP.</li>
+                            <li>Dark mode UI optimization for better readability.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">March 20, 2026</div>
+                    <div class="timeline-content">
+                        <h3>v1.0 - The Beginning</h3>
+                        <ul>
+                            <li>Initial website structure and GitHub setup.</li>
+                            <li>Vercel hosting integration.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+
+            // Intro sequence
+            tl.to(".intro-text", { duration: 1.2, opacity: 1, y: 0, ease: "power4.out" })
+              .to(".intro-text", { duration: 0.8, opacity: 0, y: -20, delay: 1.5 })
+              .to("#intro", { duration: 1, height: 0, ease: "expo.inOut" })
+              .to("#main-content", { duration: 1, opacity: 1, ease: "power2.out" }, "-=0.5");
+        });
+    </script>
+</body>
+</html>
+
