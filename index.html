@@ -12,7 +12,6 @@
             --text-main: #ffffff;
             --text-dim: rgba(255, 255, 255, 0.3);
             --border: rgba(255, 255, 255, 0.1);
-            --golden: #ffffff; /* Keeping it minimalist white/silver glow */
         }
         
         body { 
@@ -56,7 +55,6 @@
             height: 8rem; width: 6rem; opacity: 0.2;
         }
 
-        /* Final State Classes */
         .reel-stop { animation: none !important; transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
         .active-7 { opacity: 1 !important; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
 
@@ -125,7 +123,7 @@
 
     <nav class="nav-fixed hidden md:flex">
         <span class="text-[9px] tracking-[0.8em] uppercase font-semibold">Aaron</span>
-        <span class="text-[9px] tracking-[0.4em] uppercase">Est. 2026</span>
+        <span class="text-[9px] tracking-[0.4em] uppercase">Est. 2022</span>
     </nav>
 
     <main class="hero-container px-6">
@@ -136,12 +134,11 @@
         <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd" target="_blank" class="btn-minimal">
             Listen on Spotify
         </a>
-        
-        <div class="mt-20 flex gap-12 justify-center opacity-20">
-            <a href="#" class="text-[9px] tracking-widest uppercase hover:opacity-100 transition-opacity no-underline text-white">Instagram</a>
-            <a href="#" class="text-[9px] tracking-widest uppercase hover:opacity-100 transition-opacity no-underline text-white">TikTok</a>
-        </div>
     </main>
+
+    <footer class="fixed bottom-10 w-full text-center opacity-10">
+        <p class="text-[8px] tracking-[0.5em] uppercase">© 2022 Aaron. Independent Artist.</p>
+    </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -155,9 +152,7 @@
                 setTimeout(() => {
                     const el = document.getElementById(reelData.id);
                     el.classList.add('reel-stop');
-                    // Stop on the '7' symbol (which is at index 2 in our list)
                     el.style.transform = "translateY(-200%)";
-                    // Highlight the 7
                     el.children[2].classList.add('active-7');
                 }, reelData.delay);
             });
