@@ -5,90 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aaron | Official Artist Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg: #0a0a0a; 
-            --text: #ffffff;
-            --accent: #333333;
+            --bg-color: #080808; 
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.4);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
         
         body { 
-            background-color: var(--bg); 
-            color: var(--text); 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
             font-family: 'Inter', sans-serif;
             margin: 0; padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
         }
 
-        /* Subtle minimalist texture */
-        .grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        /* Ambient subtle grain */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.03; pointer-events: none; z-index: 50;
+            opacity: 0.02; pointer-events: none; z-index: 100;
         }
 
-        .spotify-container {
-            width: 100%;
-            max-width: 700px;
-            background: #121212;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid var(--accent);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        .spotify-frame-container {
+            width: 100%; max-width: 650px;
+            background: #000; border-radius: 2px;
+            overflow: hidden; border: 1px solid var(--border-color);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        .nav-link {
-            font-size: 10px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            transition: color 0.3s ease;
+        .minimal-btn {
+            border: 1px solid var(--border-color);
+            padding: 18px 0; font-size: 9px;
+            letter-spacing: 0.5em; text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 100%; text-align: center;
         }
 
-        .nav-link:hover { color: white; }
-
-        .btn-outline {
-            border: 1px solid var(--accent);
-            padding: 14px 0;
-            font-size: 10px;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            text-align: center;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .btn-outline:hover {
+        .minimal-btn:hover {
+            background: white; color: black;
             border-color: white;
-            background: white;
-            color: black;
         }
+
+        .fade-in { animation: fadeIn 2s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
-    <div class="grain"></div>
+<body class="px-6">
 
-    <header class="w-full max-w-5xl py-12 px-8 flex justify-between items-center">
-        <h1 class="text-sm font-semibold tracking-[0.8em] uppercase">Aaron</h1>
-        <div class="hidden md:block h-[1px] w-24 bg-white/10"></div>
+    <header class="w-full max-w-5xl py-14 flex justify-between items-center opacity-40">
+        <span class="text-[9px] tracking-[0.8em] uppercase font-semibold">Aaron</span>
+        <span class="text-[9px] tracking-[0.3em] uppercase">Archive 2026</span>
     </header>
 
-    <main class="w-full max-w-3xl px-8 flex flex-col items-center mt-12 md:mt-20">
+    <main class="w-full max-w-2xl flex flex-col items-center mt-20 md:mt-32 fade-in">
         
-        <div class="mb-20 text-center">
-            <h2 class="text-5xl md:text-7xl font-extralight tracking-tighter mb-4">Aaron</h2>
-            <p class="text-[10px] tracking-[0.6em] opacity-30 uppercase">Alternative R&B / Soul</p>
+        <div class="text-center mb-24">
+            <h1 class="text-5xl md:text-8xl font-thin tracking-tighter mb-4">Aaron</h1>
+            <p class="text-[9px] tracking-[0.7em] text-white opacity-30 uppercase">Alternative R&B / Soul</p>
         </div>
 
-        <div class="spotify-container mb-16">
+        <div class="spotify-frame-container mb-20">
             <iframe 
-                src="https://open.spotify.com/embed/artist/5Lp5R9mK9RjH7K5yG9Tf6a?utm_source=generator&theme=0" 
+                style="border-radius:0px" 
+                src="https://open.spotify.com/embed/artist/5Lp2T8K8U5vLd8uE6Ue6Ue?utm_source=generator&theme=0" 
                 width="100%" 
-                height="450" 
+                height="380" 
                 frameBorder="0" 
                 allowfullscreen="" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -96,18 +81,18 @@
             </iframe>
         </div>
 
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-32">
-            <a href="https://open.spotify.com/artist/5Lp5R9mK9RjH7K5yG9Tf6a" target="_blank" class="btn-outline">Spotify</a>
-            <a href="#" class="btn-outline">Instagram</a>
+        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-40">
+            <a href="https://open.spotify.com/artist/5Lp2T8K8U5vLd8uE6Ue6Ue" target="_blank" class="minimal-btn">Spotify</a>
+            <a href="#" class="minimal-btn">Instagram</a>
         </div>
 
     </main>
 
-    <footer class="mt-auto w-full max-w-5xl py-12 px-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p class="text-[8px] tracking-[0.4em] opacity-20 uppercase">© 2026 Aaron. Independent Artist.</p>
-        <div class="flex gap-8">
-            <a href="#" class="nav-link">Youtube</a>
-            <a href="#" class="nav-link">TikTok</a>
+    <footer class="mt-auto w-full max-w-5xl py-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-20">
+        <p class="text-[8px] tracking-[0.5em] uppercase">© 2026 Aaron. Music & Art.</p>
+        <div class="flex gap-10">
+            <a href="#" class="text-[8px] tracking-widest uppercase hover:opacity-100 transition-opacity">Youtube</a>
+            <a href="#" class="text-[8px] tracking-widest uppercase hover:opacity-100 transition-opacity">TikTok</a>
         </div>
     </footer>
 
