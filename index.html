@@ -34,6 +34,24 @@
         .hero-container {
             text-align: center;
             animation: fadeIn 2.5s ease-out forwards;
+            z-index: 10;
+        }
+
+        /* Artist Image Styling */
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 30px auto;
+            border: 1px solid var(--border);
+            filter: grayscale(100%); /* Para sa professional monochrome look */
+            transition: all 0.8s ease;
+        }
+
+        .profile-img:hover {
+            filter: grayscale(0%);
+            border-color: white;
         }
 
         .btn-minimal {
@@ -46,7 +64,7 @@
             color: white;
             transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
             display: inline-block;
-            margin-top: 40px;
+            margin-top: 20px;
         }
 
         .btn-minimal:hover {
@@ -80,6 +98,8 @@
     </nav>
 
     <main class="hero-container px-6">
+        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" alt="Aaron" class="profile-img">
+
         <h1 class="text-7xl md:text-9xl font-thin tracking-tighter mb-2">Aaron</h1>
         <p class="text-[10px] tracking-[0.8em] text-dim uppercase mb-12">Alternative R&B</p>
 
