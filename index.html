@@ -3,126 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Maintenance | Aaron Ocio</title>
+    <title>Aaron | Official Artist Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { 
+            --deep-night: #05070a; 
+            --slate-gray: #1a1e26;
+            --accent-silver: #e2e8f0;
+        }
+        
         body { 
-            background-color: #0e0e0e; 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            text-align: center;
+            background-color: var(--deep-night); 
+            color: var(--accent-silver); 
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0;
+            overflow-x: hidden;
         }
 
-        .container { padding: 20px; }
-
-        .icon { 
-            font-size: 5rem; 
-            margin-bottom: 20px; 
-            animation: pulse 2s infinite; 
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        /* Smooth Grainy Overlay for that R&B Texture */
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.05; pointer-events: none; z-index: 50;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #ff0050; }
-        p { color: #888; font-size: 1.1rem; }
-
-        .loader {
-            border: 4px solid #333;
-            border-top: 4px solid #ff0050;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 30px auto;
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+        .spotify-wrapper {
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .btn-minimal {
+            border: 1px solid rgba(226, 232, 240, 0.2);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 0.2em;
+        }
+
+        .btn-minimal:hover {
+            background: white;
+            color: black;
+            transform: translateY(-2px);
+            border-color: white;
+        }
+
+        /* Subtle ambient glow */
+        .glow {
+            position: fixed;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(30, 41, 59, 0.3) 0%, transparent 70%);
+            top: -10%; right: -10%;
+            z-index: -1;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center">
+    <div class="glow"></div>
 
-    <div class="container">
-        <div class="icon">🚧</div>
-        <h1>Under Maintenance</h1>
-        <p>Inaayos lang natin ang mga strings ng gitara. Balik ka maya-maya, <strong>Aaron Ocio</strong> is cooking something new.</p>
-        <div class="loader"></div>
-    </div>
+    <nav class="w-full max-w-6xl flex justify-between items-center py-10 px-8 z-10">
+        <div class="text-xs tracking-[0.6em] font-bold uppercase opacity-80">Aaron</div>
+        <div class="text-[10px] tracking-widest uppercase opacity-40">2026 Archive</div>
+    </nav>
 
-</body>
-</html>
-
-    <div id="intro">
-        <h1 class="intro-text">AARON OCIO</h1>
-    </div>
-
-    <div id="main-content">
-        <header>
-            <h1>Aaron Ocio</h1>
-            <p class="subtitle">Digital Artist • Musician • Developer</p>
-        </header>
-
-        <section class="gallery">
-            <div class="card"><span>🎸</span><br>Guitars</div>
-            <div class="card"><span>🎵</span><br>Music Clips</div>
-            <div class="card"><span>💻</span><br>Tech Projects</div>
-        </section>
-
-        <section class="changelog-container">
-            <h2>🚀 Project Evolution</h2>
-            <div class="timeline">
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">March 31, 2026</div>
-                    <div class="timeline-content">
-                        <h3>v1.2 - Interactive Portfolio</h3>
-                        <ul>
-                            <li>Added a custom manual update log section.</li>
-                            <li>Enhanced intro animation with GSAP.</li>
-                            <li>Dark mode UI optimization for better readability.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">March 20, 2026</div>
-                    <div class="timeline-content">
-                        <h3>v1.0 - The Beginning</h3>
-                        <ul>
-                            <li>Initial website structure and GitHub setup.</li>
-                            <li>Vercel hosting integration.</li>
-                        </ul>
-                    </div>
-                </div>
-
+    <main class="w-full max-w-4xl px-6 flex flex-col items-center text-center mt-12 md:mt-24">
+        <h1 class="serif-font text-6xl md:text-9xl mb-6 italic tracking-tight animate-fade-in">Aaron</h1>
+        <p class="text-xs md:text-sm tracking-[0.5em] uppercase opacity-40 mb-16 font-light">Soul • Alternative R&B</p>
+        
+        <div class="w-full glass-panel p-2 md:p-4 rounded-xl mb-16 animate-fade-in-up">
+            <div class="spotify-wrapper">
+                <iframe 
+                    src="https://open.spotify.com/embed/artist/5Lp5R9mK9RjH7K5yG9Tf6a?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="450" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy">
+                </iframe>
             </div>
-        </section>
-    </div>
+        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <div class="flex flex-col md:flex-row gap-6 w-full max-w-2xl mb-32">
+            <a href="https://open.spotify.com/artist/5Lp5R9mK9RjH7K5yG9Tf6a" target="_blank" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Spotify</a>
+            <a href="#" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Instagram</a>
+            <a href="#" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Contact</a>
+        </div>
+    </main>
+
+    <footer class="w-full border-t border-white/5 py-10 px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-[9px] opacity-30 tracking-widest uppercase">© All Rights Reserved. Aaron Music Group</p>
+        <div class="flex gap-8 opacity-30 text-[9px] tracking-[0.3em] uppercase">
+            <span>Spotify</span>
+            <span>YouTube</span>
+            <span>Apple Music</span>
+        </div>
+    </footer>
+
     <script>
-        window.addEventListener('load', () => {
-            const tl = gsap.timeline();
-
-            // Intro sequence
-            tl.to(".intro-text", { duration: 1.2, opacity: 1, y: 0, ease: "power4.out" })
-              .to(".intro-text", { duration: 0.8, opacity: 0, y: -20, delay: 1.5 })
-              .to("#intro", { duration: 1, height: 0, ease: "expo.inOut" })
-              .to("#main-content", { duration: 1, opacity: 1, ease: "power2.out" }, "-=0.5");
+        // Reveal animation on scroll or load
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.animate-fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                }, 200 * index);
+            });
         });
     </script>
 </body>
 </html>
-
