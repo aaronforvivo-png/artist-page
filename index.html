@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aaron | Official Artist Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;600;800&family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
             --bg: #050505; 
             --text-main: #ffffff;
             --text-dim: rgba(255, 255, 255, 0.3);
             --border: rgba(255, 255, 255, 0.1);
-            --golden-highlight: #ffd700;
+            --golden: #ffffff; /* Keeping it minimalist white/silver glow */
         }
         
         body { 
@@ -23,7 +23,7 @@
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
             justify-content: center;
-            overflow: hidden; /* Prevent scrolling during intro */
+            overflow: hidden;
         }
 
         body::before {
@@ -32,111 +32,79 @@
             opacity: 0.03; pointer-events: none; z-index: 100;
         }
 
-        /* ---INTRO SPIN EFFECT--- */
+        /* --- SLOT MACHINE INTRO --- */
         #intro-overlay {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            position: fixed; inset: 0; background: #000; z-index: 900;
+            display: flex; align-items: center; justify-content: center;
             animation: fadeOutIntro 0.8s ease-out forwards;
-            animation-delay: 5s; /* total intro time */
+            animation-delay: 4.5s;
         }
 
         .slot-container {
-            font-family: 'Cherry Bomb One', cursive; /* A more thematic font for numbers */
-            font-size: 8rem;
-            line-height: 1;
-            display: flex;
-            gap: 15px;
-            overflow: hidden;
-            height: 10rem;
-            color: var(--border); /* Dim initially */
+            font-size: 8rem; font-weight: 800; line-height: 1;
+            display: flex; gap: 20px; overflow: hidden; height: 8rem;
+            letter-spacing: -0.05em;
         }
 
         .reel {
-            display: flex;
-            flex-direction: column;
-            animation: spinReel 0.8s ease-in-out infinite;
+            display: flex; flex-direction: column;
+            animation: spinReel 0.15s linear infinite;
         }
-
-        .reel:nth-child(1) { animation-delay: 0s; }
-        .reel:nth-child(2) { animation-delay: 0.1s; }
-        .reel:nth-child(3) { animation-delay: 0.2s; }
 
         .symbol {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 10rem;
-            width: 8rem;
+            display: flex; align-items: center; justify-content: center;
+            height: 8rem; width: 6rem; opacity: 0.2;
         }
 
-        .reel-final {
-            animation: none !important;
-            color: var(--golden-highlight);
-            text-shadow: 0 0 20px var(--golden-highlight);
-        }
+        /* Final State Classes */
+        .reel-stop { animation: none !important; transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+        .active-7 { opacity: 1 !important; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
 
         @keyframes spinReel {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-1000%); } /* Spin through symbols */
+            100% { transform: translateY(-300%); }
         }
 
         @keyframes fadeOutIntro {
-            0% { opacity: 1; pointer-events: auto; }
-            99% { opacity: 0; pointer-events: none; }
+            0% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
 
-        /* ---HERO CONTENT--- */
+        /* --- MAIN CONTENT --- */
         .hero-container {
-            text-align: center;
-            animation: fadeInHero 1s ease-out forwards;
-            animation-delay: 5.5s; /* Wait for intro */
-            opacity: 0;
-            z-index: 10;
+            text-align: center; opacity: 0;
+            animation: fadeInHero 1.2s ease-out forwards;
+            animation-delay: 4.8s; z-index: 10;
         }
 
         .profile-img {
-            width: 150px; height: 150px;
-            border-radius: 50%; object-fit: cover;
-            margin: 0 auto 30px auto;
-            border: 1px solid var(--border);
-            filter: grayscale(100%);
-            transition: all 0.8s ease;
+            width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
+            margin: 0 auto 30px auto; border: 1px solid var(--border);
+            filter: grayscale(100%); transition: all 0.8s ease;
         }
 
         .profile-img:hover { filter: grayscale(0%); border-color: white; }
 
         .btn-minimal {
-            border: 1px solid var(--border);
-            padding: 20px 60px; font-size: 10px;
-            letter-spacing: 0.6em; text-transform: uppercase;
-            text-decoration: none; color: white;
-            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-            display: inline-block; margin-top: 20px;
+            border: 1px solid var(--border); padding: 20px 60px; font-size: 10px;
+            letter-spacing: 0.6em; text-transform: uppercase; text-decoration: none;
+            color: white; transition: all 0.6s ease; display: inline-block; margin-top: 20px;
         }
 
-        .btn-minimal:hover { background: white; color: black; border-color: white; transform: scale(1.05); }
+        .btn-minimal:hover { background: white; color: black; transform: scale(1.05); }
 
         @keyframes fadeInHero {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .nav-fixed {
-            position: fixed; top: 40px; width: 100%;
-            display: flex; justify-content: space-between;
-            padding: 0 50px; opacity: 0.4;
-            animation: fadeIn 1s ease-out forwards;
-            animation-delay: 6s; opacity: 0;
+            position: fixed; top: 40px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 50px; opacity: 0;
+            animation: fadeIn 1s ease-out forwards; animation-delay: 5.5s;
         }
         
-        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes fadeIn { to { opacity: 0.4; } }
     </style>
 </head>
 <body>
@@ -144,16 +112,15 @@
     <div id="intro-overlay">
         <div class="slot-container">
             <div class="reel" id="reel1">
-                <div class="symbol">$</div> <div class="symbol">7</div> <div class="symbol">♥</div> <div class="symbol">7</div> <div class="symbol">BAR</div> <div class="symbol">X</div> <div class="symbol">7</div> <div class="symbol">♣</div> <div class="symbol">7</div> <div class="symbol">$</div>
+                <div class="symbol">3</div><div class="symbol">5</div><div class="symbol">7</div><div class="symbol">9</div>
             </div>
             <div class="reel" id="reel2">
-                <div class="symbol">♥</div> <div class="symbol">X</div> <div class="symbol">7</div> <div class="symbol">7</div> <div class="symbol">$</div> <div class="symbol">7</div> <div class="symbol">BAR</div> <div class="symbol">7</div> <div class="symbol">♦</div> <div class="symbol">BAR</div>
+                <div class="symbol">1</div><div class="symbol">4</div><div class="symbol">7</div><div class="symbol">8</div>
             </div>
             <div class="reel" id="reel3">
-                <div class="symbol">BAR</div> <div class="symbol">X</div> <div class="symbol">♠</div> <div class="symbol">7</div> <div class="symbol">7</div> <div class="symbol">BAR</div> <div class="symbol">♣</div> <div class="symbol">7</div> <div class="symbol">$</div> <div class="symbol">7</div>
+                <div class="symbol">2</div><div class="symbol">6</div><div class="symbol">7</div><div class="symbol">0</div>
             </div>
         </div>
-        <p class="text-[10px] tracking-[0.8em] text-white opacity-20 uppercase mt-10">Hold on...</p>
     </div>
 
     <nav class="nav-fixed hidden md:flex">
@@ -163,7 +130,6 @@
 
     <main class="hero-container px-6">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" alt="Aaron" class="profile-img">
-
         <h1 class="text-7xl md:text-9xl font-thin tracking-tighter mb-2">Aaron</h1>
         <p class="text-[10px] tracking-[0.8em] text-dim uppercase mb-12">Alternative R&B</p>
 
@@ -177,38 +143,24 @@
         </div>
     </main>
 
-    <footer class="fixed bottom-10 w-full text-center opacity-10 hidden md:block">
-        <p class="text-[8px] tracking-[0.5em] uppercase">© 2026 Aaron. Independent Artist.</p>
-    </footer>
-
     <script>
-        // Use a simple timer to simulate the spin stopping
         document.addEventListener("DOMContentLoaded", () => {
-            // First stop reel 1
-            setTimeout(() => {
-                document.getElementById('reel1').classList.add('reel-final');
-                // Center the final symbol manually to match centering of symbols
-                document.getElementById('reel1').style.transform = "translateY(-100%)";
-            }, 3000); // 3 seconds of full spin
-            
-            // Then reel 2
-            setTimeout(() => {
-                document.getElementById('reel2').classList.add('reel-final');
-                 // Symbols are ordered such that symbol indices match their position
-                document.getElementById('reel2').style.transform = "translateY(-300%)";
-            }, 3600); // 3.6 seconds
+            const reels = [
+                { id: 'reel1', delay: 2000 },
+                { id: 'reel2', delay: 2600 },
+                { id: 'reel3', delay: 3200 }
+            ];
 
-            // Finally reel 3
-            setTimeout(() => {
-                document.getElementById('reel3').classList.add('reel-final');
-                document.getElementById('reel3').style.transform = "translateY(-300%)";
-            }, 4200); // 4.2 seconds
-
-            // Fade in navigation
-            setTimeout(() => {
-                const nav = document.querySelector('.nav-fixed');
-                nav.style.opacity = '0.4'; 
-            }, 5500); 
+            reels.forEach((reelData) => {
+                setTimeout(() => {
+                    const el = document.getElementById(reelData.id);
+                    el.classList.add('reel-stop');
+                    // Stop on the '7' symbol (which is at index 2 in our list)
+                    el.style.transform = "translateY(-200%)";
+                    // Highlight the 7
+                    el.children[2].classList.add('active-7');
+                }, reelData.delay);
+            });
         });
     </script>
 </body>
