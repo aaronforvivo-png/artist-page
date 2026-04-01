@@ -5,119 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aaron | Official Artist Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --deep-night: #05070a; 
-            --slate-gray: #1a1e26;
-            --accent-silver: #e2e8f0;
+            --bg: #0a0a0a; 
+            --text: #ffffff;
+            --accent: #333333;
         }
         
         body { 
-            background-color: var(--deep-night); 
-            color: var(--accent-silver); 
+            background-color: var(--bg); 
+            color: var(--text); 
             font-family: 'Inter', sans-serif;
             margin: 0; padding: 0;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .serif-font { font-family: 'Playfair Display', serif; }
-        
-        /* Smooth Grainy Overlay for that R&B Texture */
-        body::before {
-            content: "";
+        /* Subtle minimalist texture */
+        .grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.05; pointer-events: none; z-index: 50;
+            opacity: 0.03; pointer-events: none; z-index: 50;
         }
 
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-        }
-
-        .spotify-wrapper {
-            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.8);
-            border-radius: 8px;
+        .spotify-container {
+            width: 100%;
+            max-width: 700px;
+            background: #121212;
+            border-radius: 4px;
             overflow: hidden;
+            border: 1px solid var(--accent);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        .btn-minimal {
-            border: 1px solid rgba(226, 232, 240, 0.2);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            letter-spacing: 0.2em;
+        .nav-link {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.3s ease;
         }
 
-        .btn-minimal:hover {
+        .nav-link:hover { color: white; }
+
+        .btn-outline {
+            border: 1px solid var(--accent);
+            padding: 14px 0;
+            font-size: 10px;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            text-align: center;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-outline:hover {
+            border-color: white;
             background: white;
             color: black;
-            transform: translateY(-2px);
-            border-color: white;
-        }
-
-        /* Subtle ambient glow */
-        .glow {
-            position: fixed;
-            width: 50vw; height: 50vw;
-            background: radial-gradient(circle, rgba(30, 41, 59, 0.3) 0%, transparent 70%);
-            top: -10%; right: -10%;
-            z-index: -1;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center">
-    <div class="glow"></div>
+<body>
+    <div class="grain"></div>
 
-    <nav class="w-full max-w-6xl flex justify-between items-center py-10 px-8 z-10">
-        <div class="text-xs tracking-[0.6em] font-bold uppercase opacity-80">Aaron</div>
-        <div class="text-[10px] tracking-widest uppercase opacity-40">2026 Archive</div>
-    </nav>
+    <header class="w-full max-w-5xl py-12 px-8 flex justify-between items-center">
+        <h1 class="text-sm font-semibold tracking-[0.8em] uppercase">Aaron</h1>
+        <div class="hidden md:block h-[1px] w-24 bg-white/10"></div>
+    </header>
 
-    <main class="w-full max-w-4xl px-6 flex flex-col items-center text-center mt-12 md:mt-24">
-        <h1 class="serif-font text-6xl md:text-9xl mb-6 italic tracking-tight animate-fade-in">Aaron</h1>
-        <p class="text-xs md:text-sm tracking-[0.5em] uppercase opacity-40 mb-16 font-light">Soul • Alternative R&B</p>
+    <main class="w-full max-w-3xl px-8 flex flex-col items-center mt-12 md:mt-20">
         
-        <div class="w-full glass-panel p-2 md:p-4 rounded-xl mb-16 animate-fade-in-up">
-            <div class="spotify-wrapper">
-                <iframe 
-                    src="https://open.spotify.com/embed/artist/5Lp5R9mK9RjH7K5yG9Tf6a?utm_source=generator&theme=0" 
-                    width="100%" 
-                    height="450" 
-                    frameBorder="0" 
-                    allowfullscreen="" 
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                    loading="lazy">
-                </iframe>
-            </div>
+        <div class="mb-20 text-center">
+            <h2 class="text-5xl md:text-7xl font-extralight tracking-tighter mb-4">Aaron</h2>
+            <p class="text-[10px] tracking-[0.6em] opacity-30 uppercase">Alternative R&B / Soul</p>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-6 w-full max-w-2xl mb-32">
-            <a href="https://open.spotify.com/artist/5Lp5R9mK9RjH7K5yG9Tf6a" target="_blank" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Spotify</a>
-            <a href="#" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Instagram</a>
-            <a href="#" class="btn-minimal py-5 px-10 text-[10px] font-bold uppercase w-full">Contact</a>
+        <div class="spotify-container mb-16">
+            <iframe 
+                src="https://open.spotify.com/embed/artist/5Lp5R9mK9RjH7K5yG9Tf6a?utm_source=generator&theme=0" 
+                width="100%" 
+                height="450" 
+                frameBorder="0" 
+                allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy">
+            </iframe>
         </div>
+
+        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-32">
+            <a href="https://open.spotify.com/artist/5Lp5R9mK9RjH7K5yG9Tf6a" target="_blank" class="btn-outline">Spotify</a>
+            <a href="#" class="btn-outline">Instagram</a>
+        </div>
+
     </main>
 
-    <footer class="w-full border-t border-white/5 py-10 px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-[9px] opacity-30 tracking-widest uppercase">© All Rights Reserved. Aaron Music Group</p>
-        <div class="flex gap-8 opacity-30 text-[9px] tracking-[0.3em] uppercase">
-            <span>Spotify</span>
-            <span>YouTube</span>
-            <span>Apple Music</span>
+    <footer class="mt-auto w-full max-w-5xl py-12 px-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <p class="text-[8px] tracking-[0.4em] opacity-20 uppercase">© 2026 Aaron. Independent Artist.</p>
+        <div class="flex gap-8">
+            <a href="#" class="nav-link">Youtube</a>
+            <a href="#" class="nav-link">TikTok</a>
         </div>
     </footer>
 
-    <script>
-        // Reveal animation on scroll or load
-        document.addEventListener('DOMContentLoaded', () => {
-            const elements = document.querySelectorAll('.animate-fade-in');
-            elements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                }, 200 * index);
-            });
-        });
-    </script>
 </body>
 </html>
