@@ -21,11 +21,9 @@
         .minimal-btn {
             border: 1px solid var(--border); padding: 18px 0; font-size: 9px;
             letter-spacing: 0.5em; text-transform: uppercase; text-align: center;
-            transition: all 0.5s ease; width: 100%;
+            transition: all 0.5s ease; width: 100%; text-decoration: none; color: white;
         }
         .minimal-btn:hover { background: white; color: black; border-color: white; }
-        .fade-in { animation: fadeIn 1.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="px-6">
@@ -35,15 +33,15 @@
         <span class="text-[9px] tracking-[0.3em] uppercase">Archive 2026</span>
     </header>
 
-    <main class="w-full max-w-2xl flex flex-col items-center mt-20 md:mt-32 fade-in">
+    <main class="w-full max-w-2xl flex flex-col items-center mt-20 md:mt-32">
         <div class="text-center mb-24">
             <h1 class="text-6xl md:text-8xl font-thin tracking-tighter mb-4">Aaron</h1>
-            <p class="text-[9px] tracking-[0.7em] opacity-30 uppercase text-white">Alternative R&B / Soul</p>
+            <p class="text-[9px] tracking-[0.7em] opacity-30 uppercase">Alternative R&B / Soul</p>
         </div>
 
         <div class="spotify-container mb-20">
             <iframe 
-                src="https://open.spotify.com/embed/artist/5LpY83mZ5z9T9H9L4f5LpY?utm_source=generator&theme=0" 
+                src="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd" 
                 width="100%" 
                 height="380" 
                 frameBorder="0" 
@@ -54,13 +52,13 @@
         </div>
 
         <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-40">
-            <a href="https://open.spotify.com/artist/5LpY83mZ5z9T9H9L4f5LpY" target="_blank" class="minimal-btn">Spotify</a>
-            <a href="https://instagram.com" target="_blank" class="minimal-btn">Instagram</a>
+            <a href="https://open.spotify.com/artist/5LpxW7YqZ67Vq5jW35ZJmK" target="_blank" class="minimal-btn">Spotify</a>
+            <a href="#" class="minimal-btn">Instagram</a>
         </div>
     </main>
 
-    <footer class="mt-auto w-full max-w-5xl py-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-20">
-        <p class="text-[8px] tracking-[0.5em] uppercase">© 2026 Aaron. Independent Artist.</p>
+    <footer class="mt-auto w-full max-w-5xl py-12 border-t border-white/5 opacity-20">
+        <p class="text-[8px] tracking-[0.5em] uppercase text-center md:text-left">© 2026 Aaron. Independent Artist.</p>
     </footer>
 
 </body>
