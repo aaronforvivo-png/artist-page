@@ -27,27 +27,17 @@
             filter: grayscale(1) brightness(0.5); 
         }
 
-        /* CUSTOM CHECKBOX - SIGURADONG MAY CHECK NA WHITE */
-        .remember-wrap { 
-            display: flex; align-items: center; justify-content: center; 
-            gap: 12px; margin-bottom: 30px; cursor: pointer; user-select: none;
-        }
-        
-        .custom-check {
-            width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 3px; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; background: transparent;
-        }
-
-        #remember:checked + .custom-check {
-            background: #fff; border-color: #fff;
-        }
-
-        #remember:checked + .custom-check::after {
-            content: '✓'; color: #000; font-size: 12px; font-weight: 900;
-        }
-
+        /* CUSTOM CHECKBOX */
+        .remember-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 30px; cursor: pointer; user-select: none; }
+        .custom-check { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
+        #remember:checked + .custom-check { background: #fff; border-color: #fff; }
+        #remember:checked + .custom-check::after { content: '✓'; color: #000; font-size: 12px; font-weight: 900; }
         .remember-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; color: #888; }
+
+        /* CHAT BUBBLES */
+        .msg { padding: 10px 15px; border-radius: 4px; max-width: 85%; font-size: 13px; font-weight: 300; }
+        .msg.fan { background: rgba(255,255,255,0.05); color: #fff; align-self: flex-start; border: 1px solid rgba(255,255,255,0.1); }
+        .msg.aaron { background: #fff; color: #000; align-self: flex-end; font-weight: 400; }
 
         #admin-content { display: none; }
     </style>
@@ -57,15 +47,12 @@
     <div id="login-gate" class="max-w-xs mx-auto text-center mt-32">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="login-img">
         <h1 class="text-xl font-thin mb-10 tracking-[0.5em] uppercase text-zinc-400">Admin</h1>
-        
         <input type="password" id="pass" class="input-field mb-4" placeholder="••••••••">
-        
         <label class="remember-wrap">
             <input type="checkbox" id="remember" class="hidden">
             <div class="custom-check"></div>
             <span class="remember-label">Keep session active</span>
         </label>
-
         <button onclick="checkPass()" class="btn">Login</button>
     </div>
 
@@ -95,40 +82,39 @@
         </div>
     </div>
 
+    <div id="chat-modal" class="fixed inset-0 bg-black z-50 hidden flex-col p-6">
+        <div class="flex justify-between items-center border-b border-white/5 pb-6">
+            <span id="active-user-id" class="text-[9px] tracking-[4px] text-zinc-500 uppercase">Message Log</span>
+            <button onclick="closeChat()" class="text-[10px] tracking-widest uppercase opacity-50">Close</button>
+        </div>
+        <div id="modal-history" class="flex-grow overflow-y-auto py-8 flex flex-col gap-4"></div>
+        <div class="pt-6 border-t border-white/5 flex gap-4">
+            <input type="text" id="modal-reply" class="input-field mb-0 flex-grow text-left" placeholder="Type a reply...">
+            <button onclick="sendReply()" class="bg-white text-black px-8 rounded text-[10px] font-bold uppercase tracking-wider">Send</button>
+        </div>
+    </div>
+
     <script>
         const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
         const ADMIN_PASS = "@Aaron123";
+        let activeUid = null;
 
-        // AUTO-LOGIN LOGIC - Eto ang magpapanatili sayo sa loob
-        if (localStorage.getItem('aaron_admin_auth') === 'true') {
-            showAdmin();
-        }
+        if (localStorage.getItem('aaron_admin_auth') === 'true') { showAdmin(); }
 
         function checkPass() {
-            const passInput = document.getElementById('pass');
-            const isChecked = document.getElementById('remember').checked;
-
-            if (passInput.value === ADMIN_PASS) {
-                if (isChecked) {
-                    localStorage.setItem('aaron_admin_auth', 'true');
-                }
+            if (document.getElementById('pass').value === ADMIN_PASS) {
+                if (document.getElementById('remember').checked) localStorage.setItem('aaron_admin_auth', 'true');
                 showAdmin();
-            } else {
-                alert("Auth Failed");
-            }
+            } else { alert("Auth Failed"); }
         }
 
         function showAdmin() {
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            loadUpdates(); 
-            loadInbox();
+            loadUpdates(); loadInbox();
         }
 
-        function logout() {
-            localStorage.removeItem('aaron_admin_auth');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('aaron_admin_auth'); location.reload(); }
 
         function switchTab(t) {
             document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
@@ -139,6 +125,7 @@
             document.getElementById('tab-i').style.borderBottom = t === 'i' ? '1px solid white' : 'none';
         }
 
+        // UPDATES
         async function publish() {
             const data = { category: document.getElementById('cat').value, name: document.getElementById('name').value, date: document.getElementById('date').value };
             await fetch(`${BASE_URL}/updates.json`, { method: 'POST', body: JSON.stringify(data) });
@@ -160,22 +147,56 @@
 
         async function delUpdate(k) { await fetch(`${BASE_URL}/updates/${k}.json`, { method: 'DELETE' }); loadUpdates(); }
 
+        // INBOX & CHAT
         async function loadInbox() {
             const res = await fetch(`${BASE_URL}/chats.json`);
             const data = await res.json();
             const list = document.getElementById('inbox-list');
             if(!data) return;
-            list.innerHTML = Object.keys(data).map(uid => `
-                <div class="bg-zinc-950 p-6 border border-white/5 rounded flex justify-between items-center cursor-pointer" onclick="openChat('${uid}')">
-                    <div class="w-2/3">
-                        <div class="text-[8px] text-zinc-600 uppercase mb-2">${uid}</div>
-                        <div class="text-[12px] font-light opacity-60">View history...</div>
-                    </div>
-                </div>
-            `).join('');
+            list.innerHTML = Object.keys(data).map(uid => {
+                const msgs = Object.values(data[uid]);
+                const lastMsg = msgs[msgs.length - 1];
+                return `
+                    <div class="bg-zinc-950 p-6 border border-white/5 rounded flex justify-between items-center cursor-pointer hover:border-white/20 transition" onclick="openChat('${uid}')">
+                        <div class="w-2/3">
+                            <div class="text-[8px] text-zinc-600 uppercase tracking-widest mb-2">${uid}</div>
+                            <div class="text-[12px] font-light italic truncate opacity-60">"${lastMsg.text}"</div>
+                        </div>
+                        <button onclick="event.stopPropagation(); delChat('${uid}')" class="text-[8px] opacity-30 uppercase tracking-[2px]">Delete</button>
+                    </div>`;
+            }).join('');
         }
 
-        function openChat(uid) { alert("Chat History for: " + uid); }
+        async function openChat(uid) {
+            activeUid = uid;
+            document.getElementById('active-user-id').textContent = uid;
+            document.getElementById('chat-modal').classList.remove('hidden');
+            document.getElementById('chat-modal').classList.add('flex');
+            renderHistory();
+        }
+
+        async function renderHistory() {
+            if(!activeUid) return;
+            const res = await fetch(`${BASE_URL}/chats/${activeUid}.json`);
+            const data = await res.json();
+            const box = document.getElementById('modal-history');
+            if(!data) return;
+            box.innerHTML = Object.values(data).map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function sendReply() {
+            const input = document.getElementById('modal-reply');
+            if(!input.value.trim() || !activeUid) return;
+            await fetch(`${BASE_URL}/chats/${activeUid}.json`, { method: 'POST', body: JSON.stringify({ sender: 'aaron', text: input.value, time: Date.now() }) });
+            input.value = ''; renderHistory();
+        }
+
+        function closeChat() { document.getElementById('chat-modal').classList.add('hidden'); activeUid = null; }
+
+        async function delChat(uid) { if(confirm("Delete conversation?")) { await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' }); loadInbox(); } }
+
+        setInterval(() => { if(activeUid) renderHistory(); }, 5000);
     </script>
 </body>
 </html>
