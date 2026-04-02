@@ -3,46 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaron Admin | Inbox</title>
+    <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
-        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 10px; outline: none; }
-        .btn { background: #fff; color: #000; font-weight: 800; padding: 15px; width: 100%; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .tab-btn { padding: 10px 20px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 2px solid transparent; cursor: pointer; opacity: 0.4; }
-        .tab-btn.active { opacity: 1; border-color: #fff; }
-        .chat-row { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 15px; border-radius: 10px; outline: none; margin-bottom: 10px; }
+        .btn { background: #fff; color: #000; font-weight: 800; padding: 15px; width: 100%; border-radius: 10px; text-transform: uppercase; }
+        .tab-btn { padding: 15px; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; cursor: pointer; opacity: 0.3; }
+        .tab-btn.active { opacity: 1; border-bottom: 2px solid #fff; }
         #admin-content { display: none; }
     </style>
 </head>
 <body class="p-6">
 
     <div id="login-gate" class="max-w-xs mx-auto text-center mt-20">
-        <h1 class="text-2xl font-black mb-8 uppercase italic">System Access</h1>
+        <h1 class="text-4xl font-black mb-10 italic">ADMIN</h1>
         <input type="password" id="pass" class="input-field text-center" placeholder="Password">
-        <button onclick="checkPass()" class="btn">Login</button>
+        <button onclick="checkPass()" class="btn">Authenticate</button>
     </div>
 
-    <div id="admin-content" class="max-w-2xl mx-auto">
-        <div class="flex gap-6 mb-10">
-            <div id="tab-updates" class="tab-btn active" onclick="switchTab('updates')">Updates</div>
-            <div id="tab-inbox" class="tab-btn" onclick="switchTab('inbox')">Inbox</div>
-            <button onclick="location.reload()" class="ml-auto text-[10px] opacity-30 uppercase">Logout</button>
+    <div id="admin-content" class="max-w-xl mx-auto">
+        <div class="flex border-b border-white/5 mb-8">
+            <div id="tab-u" class="tab-btn active" onclick="switchTab('u')">Updates</div>
+            <div id="tab-i" class="tab-btn" onclick="switchTab('i')">Inbox</div>
+            <button onclick="location.reload()" class="ml-auto text-[10px] opacity-20 uppercase">Exit</button>
         </div>
 
-        <div id="view-updates">
+        <div id="view-u">
             <div class="bg-zinc-900 p-6 rounded-2xl mb-8">
                 <select id="cat" class="input-field"><option>Upcoming Release</option><option>Live Event</option></select>
                 <input type="text" id="name" class="input-field" placeholder="Title">
                 <input type="text" id="date" class="input-field" placeholder="Date">
                 <button onclick="publish()" class="btn mt-2">Publish</button>
             </div>
-            <div id="update-list" class="space-y-2"></div>
+            <div id="update-list" class="space-y-3"></div>
         </div>
 
-        <div id="view-inbox" style="display:none;">
-            <h2 class="text-xs font-bold uppercase mb-6 tracking-widest text-zinc-500">Recent Messages</h2>
-            <div id="inbox-list"></div>
+        <div id="view-i" style="display:none;">
+            <div id="inbox-list" class="space-y-4"></div>
         </div>
     </div>
 
@@ -57,11 +55,11 @@
             }
         }
 
-        function switchTab(tab) {
-            document.getElementById('view-updates').style.display = tab === 'updates' ? 'block' : 'none';
-            document.getElementById('view-inbox').style.display = tab === 'inbox' ? 'block' : 'none';
-            document.getElementById('tab-updates').className = `tab-btn ${tab==='updates'?'active':''}`;
-            document.getElementById('tab-inbox').className = `tab-btn ${tab==='inbox'?'active':''}`;
+        function switchTab(t) {
+            document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
+            document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none';
+            document.getElementById('tab-u').className = `tab-btn ${t==='u'?'active':''}`;
+            document.getElementById('tab-i').className = `tab-btn ${t==='i'?'active':''}`;
         }
 
         async function publish() {
@@ -75,9 +73,9 @@
             const data = await res.json();
             const list = document.getElementById('update-list');
             list.innerHTML = data ? Object.keys(data).reverse().map(k => `
-                <div class="flex justify-between items-center p-4 bg-zinc-900 rounded-lg text-xs">
-                    <span>${data[k].name}</span>
-                    <button onclick="delUpdate('${k}')" class="text-red-500">Delete</button>
+                <div class="flex justify-between items-center p-4 bg-zinc-900 rounded-xl text-xs">
+                    <span class="font-bold">${data[k].name}</span>
+                    <button onclick="delUpdate('${k}')" class="text-red-500 uppercase font-black">X</button>
                 </div>
             `).join('') : '';
         }
@@ -88,37 +86,31 @@
             const res = await fetch(`${BASE_URL}/chats.json`);
             const data = await res.json();
             const list = document.getElementById('inbox-list');
-            if(!data) return;
+            if(!data) return list.innerHTML = "No messages.";
             list.innerHTML = Object.keys(data).map(uid => {
                 const msgs = Object.values(data[uid]);
                 const lastMsg = msgs[msgs.length - 1];
                 return `
-                    <div class="chat-row">
-                        <div class="text-[10px] text-zinc-500 mb-2">User ID: ${uid}</div>
-                        <div class="text-sm mb-4 font-light italic text-zinc-300">"${lastMsg.text}"</div>
+                    <div class="bg-zinc-900 p-5 rounded-2xl border border-white/5">
+                        <div class="text-[9px] text-zinc-500 mb-3 uppercase tracking-widest">Client: ${uid}</div>
+                        <div class="text-sm italic mb-4">"${lastMsg.text}"</div>
                         <div class="flex gap-2">
-                            <input type="text" id="reply-${uid}" class="input-field mb-0 text-xs py-2" placeholder="Write reply...">
-                            <button onclick="sendReply('${uid}')" class="bg-white text-black px-4 rounded-lg text-[10px] font-bold">Reply</button>
-                            <button onclick="delChat('${uid}')" class="text-red-500 text-[10px] ml-auto">Clear</button>
+                            <input type="text" id="rep-${uid}" class="input-field mb-0 py-2 text-xs" placeholder="Reply...">
+                            <button onclick="sendReply('${uid}')" class="bg-white text-black px-5 rounded-xl text-[10px] font-bold uppercase">Send</button>
                         </div>
                     </div>`;
             }).join('');
         }
 
         async function sendReply(uid) {
-            const text = document.getElementById(`reply-${uid}`).value;
+            const text = document.getElementById(`rep-${uid}`).value;
             if(!text) return;
-            await fetch(`${BASE_URL}/chats/${uid}.json`, { 
-                method: 'POST', 
-                body: JSON.stringify({ sender: 'aaron', text: text, time: Date.now() }) 
-            });
-            document.getElementById(`reply-${uid}`).value = '';
+            await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'POST', body: JSON.stringify({ sender: 'aaron', text: text, time: Date.now() }) });
+            document.getElementById(`rep-${uid}`).value = '';
             loadInbox();
         }
 
-        async function delChat(uid) { if(confirm('Delete conversation?')) { await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' }); loadInbox(); } }
-
-        setInterval(() => { if(document.getElementById('admin-content').style.display === 'block') loadInbox(); }, 10000);
+        setInterval(() => { if(document.getElementById('admin-content').style.display === 'block') loadInbox(); }, 8000);
     </script>
 </body>
 </html>
