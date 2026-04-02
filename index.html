@@ -10,16 +10,25 @@
         :root { --bg: #050505; --text-dim: rgba(255, 255, 255, 0.3); --border: rgba(255, 255, 255, 0.1); }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
         
-        /* Header Section para sa Menu Button */
-        header { width: 100%; display: flex; justify-content: flex-end; padding: 30px; opacity: 0; animation: fadeIn 1s forwards 5s; }
-        #menu-btn { cursor: pointer; padding: 10px; z-index: 1100; }
+        /* Header Section */
+        header { width: 100%; display: flex; justify-content: flex-end; padding: 30px; opacity: 0; animation: fadeIn 1s forwards 5s; position: relative; z-index: 1100; }
+        #menu-btn { cursor: pointer; padding: 10px; transition: 0.3s; }
         .bar { width: 25px; height: 1px; background: #fff; margin: 6px 0; transition: 0.4s; }
         
+        /* Burger Animation to 'X' */
+        #menu-btn.open .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #menu-btn.open .bar:nth-child(2) { opacity: 0; }
+        #menu-btn.open .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
         /* Sidebar Menu */
-        #sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #000; z-index: 1050; transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); display: flex; flex-direction: column; padding: 100px 40px; border-left: 1px solid var(--border); }
+        #sidebar { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: #000; z-index: 1050; transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1); display: flex; flex-direction: column; padding: 120px 40px; border-left: 1px solid var(--border); }
         #sidebar.open { right: 0; }
-        #sidebar a { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; margin-bottom: 30px; transition: 0.3s; cursor: pointer; }
+        #sidebar a { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; margin-bottom: 30px; transition: 0.3s; cursor: pointer; display: block; }
         #sidebar a:hover { color: #fff; transform: translateX(5px); }
+
+        /* Overlay para sa click-outside-to-close */
+        #menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; display: none; opacity: 0; transition: 0.5s; }
+        #menu-overlay.active { display: block; opacity: 1; }
 
         /* Intro Overlay */
         #intro-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; animation: fadeOut 0.8s ease forwards; animation-delay: 4.5s; }
@@ -35,20 +44,12 @@
         .hero { text-align: center; opacity: 0; animation: fadeIn 1s forwards 4.8s; margin-top: 5vh; padding: 0 20px; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         
-        /* Font Fix: Siguradong Inter at Sans-Serif */
         h1.artist-name { font-family: 'Inter', sans-serif; font-weight: 100; }
-
         .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin: 0 auto 25px; border: 1px solid var(--border); filter: grayscale(100%); }
         .btn-minimal { border: 1px solid var(--border); padding: 15px 35px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: white; display: inline-block; margin-top: 25px; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .btn-minimal:hover { background: white; color: black; }
 
-        /* Smooth Genre Animation */
-        #genre-text { 
-            display: inline-block; 
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            opacity: 1; 
-            transform: translateY(0);
-        }
+        #genre-text { display: inline-block; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; transform: translateY(0); }
 
         /* Chat Widget */
         #chat-trigger { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 400; opacity: 0; animation: fadeIn 1s forwards 6s; }
@@ -73,6 +74,8 @@
             <div class="reel" id="r3"><div class="symbol">2</div><div class="symbol">6</div><div class="symbol">7</div></div>
         </div>
     </div>
+
+    <div id="menu-overlay" onclick="toggleSidebar()"></div>
 
     <header>
         <div id="menu-btn" onclick="toggleSidebar()">
@@ -119,7 +122,17 @@
         let userId = localStorage.getItem('chat_uid') || 'user_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('chat_uid', userId);
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        // REVISED SIDEBAR LOGIC
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('menu-overlay');
+            const btn = document.getElementById('menu-btn');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('open');
+        }
+
         function comingSoon(item) { alert(`${item} - Coming Soon`); toggleSidebar(); }
         
         function toggleChat() { 
