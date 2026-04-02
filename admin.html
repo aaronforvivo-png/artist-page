@@ -5,15 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | Aaron</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
-        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 15px; border-radius: 10px; outline: none; margin-bottom: 10px; }
-        .btn { background: #fff; color: #000; font-weight: 800; padding: 15px; width: 100%; border-radius: 10px; text-transform: uppercase; }
-        .tab-btn { padding: 15px; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; cursor: pointer; opacity: 0.3; }
-        .tab-btn.active { opacity: 1; border-bottom: 2px solid #fff; }
+        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 15px; border-radius: 12px; outline: none; margin-bottom: 10px; transition: 0.3s; }
+        .input-field:focus { border-color: #444; }
+        .btn { background: #fff; color: #000; font-weight: 800; padding: 15px; width: 100%; border-radius: 12px; text-transform: uppercase; cursor: pointer; }
         
-        /* Chat Modal Styles */
-        #chat-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; flex-direction: column; padding: 20px; }
+        /* Profile Image with Shades Effect */
+        .login-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 2px solid #222; 
+                     filter: grayscale(1) brightness(0.6) contrast(1.2); } /* "Shades" filter effect */
+
+        .error-msg { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: none; }
+        
+        /* Shake Animation para sa error */
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        #chat-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; display: none; flex-direction: column; padding: 20px; }
         #modal-history { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 20px 0; }
         .msg { padding: 10px 15px; border-radius: 15px; max-width: 85%; font-size: 14px; }
         .msg.fan { background: #fff; color: #000; align-self: flex-start; }
@@ -25,23 +38,33 @@
 <body class="p-6">
 
     <div id="login-gate" class="max-w-xs mx-auto text-center mt-20">
-        <h1 class="text-4xl font-black mb-10 italic">ADMIN</h1>
+        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="login-img">
+        <h1 class="text-3xl font-black mb-8 italic tracking-tighter">ADMIN</h1>
+        
+        <div id="error" class="error-msg">Invalid Credentials</div>
+        
         <input type="password" id="pass" class="input-field text-center" placeholder="Password">
+        
+        <div class="flex items-center justify-center gap-2 mb-6">
+            <input type="checkbox" id="remember" class="accent-white">
+            <label for="remember" class="text-[10px] uppercase tracking-widest text-zinc-500">Remember this device</label>
+        </div>
+
         <button onclick="checkPass()" class="btn">Authenticate</button>
     </div>
 
     <div id="admin-content" class="max-w-xl mx-auto">
         <div class="flex border-b border-white/5 mb-8">
-            <div id="tab-u" class="tab-btn active" onclick="switchTab('u')">Updates</div>
-            <div id="tab-i" class="tab-btn" onclick="switchTab('i')">Inbox</div>
-            <button onclick="location.reload()" class="ml-auto text-[10px] opacity-20 uppercase">Exit</button>
+            <div id="tab-u" class="p-4 uppercase text-[10px] tracking-widest cursor-pointer opacity-100 border-b-2 border-white" onclick="switchTab('u')">Updates</div>
+            <div id="tab-i" class="p-4 uppercase text-[10px] tracking-widest cursor-pointer opacity-30" onclick="switchTab('i')">Inbox</div>
+            <button onclick="logout()" class="ml-auto text-[10px] opacity-20 uppercase">Logout</button>
         </div>
 
         <div id="view-u">
             <div class="bg-zinc-900 p-6 rounded-2xl mb-8">
-                <select id="cat" class="input-field"><option>Upcoming Release</option><option>Live Event</option></select>
-                <input type="text" id="name" class="input-field" placeholder="Title">
-                <input type="text" id="date" class="input-field" placeholder="Date">
+                <select id="cat" class="input-field text-sm"><option>Upcoming Release</option><option>Live Event</option></select>
+                <input type="text" id="name" class="input-field text-sm" placeholder="Title">
+                <input type="text" id="date" class="input-field text-sm" placeholder="Date">
                 <button onclick="publish()" class="btn mt-2">Publish</button>
             </div>
             <div id="update-list" class="space-y-3"></div>
@@ -54,36 +77,63 @@
 
     <div id="chat-modal">
         <div class="flex justify-between items-center border-b border-white/10 pb-4">
-            <span id="active-user-id" class="text-[10px] tracking-widest text-zinc-500 uppercase">Chat</span>
+            <span id="active-user-id" class="text-[10px] tracking-widest text-zinc-500 uppercase">History</span>
             <button onclick="closeChat()" class="text-xs font-bold uppercase">Close</button>
         </div>
         <div id="modal-history"></div>
         <div class="pt-4 border-t border-white/10 flex gap-2">
-            <input type="text" id="modal-reply" class="input-field mb-0" placeholder="Type your reply...">
+            <input type="text" id="modal-reply" class="input-field mb-0" placeholder="Message...">
             <button onclick="sendReplyFromModal()" class="bg-white text-black px-6 rounded-xl font-bold uppercase text-xs">Send</button>
         </div>
     </div>
 
     <script>
         const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
+        const ADMIN_PASS = "@Aaron123";
         let currentChatUser = null;
 
-        function checkPass() {
-            if(document.getElementById('pass').value === "@Aaron123") {
-                document.getElementById('login-gate').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-                loadUpdates(); loadInbox();
+        // Auto-login check
+        window.onload = () => {
+            if(localStorage.getItem('admin_session') === 'active') {
+                showAdmin();
             }
+        }
+
+        function checkPass() {
+            const passInput = document.getElementById('pass');
+            const errorText = document.getElementById('error');
+            const remember = document.getElementById('remember').checked;
+
+            if(passInput.value === ADMIN_PASS) {
+                if(remember) localStorage.setItem('admin_session', 'active');
+                showAdmin();
+            } else {
+                errorText.style.display = 'block';
+                passInput.classList.add('shake');
+                setTimeout(() => passInput.classList.remove('shake'), 400);
+            }
+        }
+
+        function showAdmin() {
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            loadUpdates(); loadInbox();
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_session');
+            location.reload();
         }
 
         function switchTab(t) {
             document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
             document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none';
-            document.getElementById('tab-u').className = `tab-btn ${t==='u'?'active':''}`;
-            document.getElementById('tab-i').className = `tab-btn ${t==='i'?'active':''}`;
+            document.getElementById('tab-u').style.opacity = t === 'u' ? '1' : '0.3';
+            document.getElementById('tab-u').style.borderBottom = t === 'u' ? '2px solid white' : 'none';
+            document.getElementById('tab-i').style.opacity = t === 'i' ? '1' : '0.3';
+            document.getElementById('tab-i').style.borderBottom = t === 'i' ? '2px solid white' : 'none';
         }
 
-        /* Update Logic */
         async function publish() {
             const data = { category: document.getElementById('cat').value, name: document.getElementById('name').value, date: document.getElementById('date').value };
             await fetch(`${BASE_URL}/updates.json`, { method: 'POST', body: JSON.stringify(data) });
@@ -96,7 +146,7 @@
             const list = document.getElementById('update-list');
             list.innerHTML = data ? Object.keys(data).reverse().map(k => `
                 <div class="flex justify-between items-center p-4 bg-zinc-900 rounded-xl text-xs">
-                    <span class="font-bold">${data[k].name}</span>
+                    <span class="font-bold uppercase tracking-tighter">${data[k].name}</span>
                     <button onclick="delUpdate('${k}')" class="text-red-500 font-black">X</button>
                 </div>
             `).join('') : '';
@@ -104,21 +154,20 @@
 
         async function delUpdate(k) { await fetch(`${BASE_URL}/updates/${k}.json`, { method: 'DELETE' }); loadUpdates(); }
 
-        /* Inbox & History Logic */
         async function loadInbox() {
             const res = await fetch(`${BASE_URL}/chats.json`);
             const data = await res.json();
             const list = document.getElementById('inbox-list');
-            if(!data) return list.innerHTML = "No messages.";
+            if(!data) return list.innerHTML = "<p class='text-center opacity-20 text-xs uppercase mt-10'>No messages found</p>";
             
             list.innerHTML = Object.keys(data).map(uid => {
                 const msgs = Object.values(data[uid]);
                 const lastMsg = msgs[msgs.length - 1];
                 return `
                     <div class="bg-zinc-900 p-5 rounded-2xl border border-white/5 flex justify-between items-center cursor-pointer hover:bg-zinc-800 transition" onclick="openChat('${uid}')">
-                        <div>
+                        <div class="w-2/3">
                             <div class="text-[9px] text-zinc-500 uppercase mb-1">${uid}</div>
-                            <div class="text-sm truncate w-48 italic">"${lastMsg.text}"</div>
+                            <div class="text-sm truncate italic opacity-80">"${lastMsg.text}"</div>
                         </div>
                         <button onclick="event.stopPropagation(); delChat('${uid}')" class="text-red-500 text-[10px] font-black uppercase">Delete</button>
                     </div>`;
@@ -127,7 +176,7 @@
 
         async function openChat(uid) {
             currentChatUser = uid;
-            document.getElementById('active-user-id').textContent = "User: " + uid;
+            document.getElementById('active-user-id').textContent = uid;
             document.getElementById('chat-modal').style.display = 'flex';
             renderHistory();
         }
@@ -138,9 +187,7 @@
             const data = await res.json();
             const container = document.getElementById('modal-history');
             if(!data) return;
-            container.innerHTML = Object.values(data).map(m => `
-                <div class="msg ${m.sender}">${m.text}</div>
-            `).join('');
+            container.innerHTML = Object.values(data).map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('');
             container.scrollTop = container.scrollHeight;
         }
 
@@ -155,13 +202,10 @@
             renderHistory();
         }
 
-        function closeChat() {
-            document.getElementById('chat-modal').style.display = 'none';
-            currentChatUser = null;
-        }
+        function closeChat() { document.getElementById('chat-modal').style.display = 'none'; currentChatUser = null; }
 
         async function delChat(uid) {
-            if(confirm("Delete full conversation?")) {
+            if(confirm("Permanently delete conversation?")) {
                 await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' });
                 loadInbox();
             }
