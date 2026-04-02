@@ -10,29 +10,15 @@
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
         
         .input-field { 
-            background: transparent; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            color: #fff; 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 4px; 
-            outline: none; 
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-align: center;
+            background: transparent; border: 1px solid rgba(255,255,255,0.1); 
+            color: #fff; width: 100%; padding: 12px; border-radius: 4px; 
+            outline: none; font-weight: 300; letter-spacing: 1px; text-align: center;
         }
 
         .btn { 
-            background: #fff; 
-            color: #000; 
-            font-size: 11px;
-            letter-spacing: 3px;
-            font-weight: 700; 
-            padding: 14px; 
-            width: 100%; 
-            border-radius: 4px; 
-            text-transform: uppercase; 
-            cursor: pointer; 
+            background: #fff; color: #000; font-size: 11px; letter-spacing: 3px;
+            font-weight: 700; padding: 14px; width: 100%; border-radius: 4px; 
+            text-transform: uppercase; cursor: pointer; 
         }
         
         .login-img { 
@@ -41,22 +27,27 @@
             filter: grayscale(1) brightness(0.5); 
         }
 
-        /* FIXED CHECKBOX: Malaki at may visible checkmark */
+        /* CUSTOM CHECKBOX - SIGURADONG MAY CHECK NA WHITE */
         .remember-wrap { 
             display: flex; align-items: center; justify-content: center; 
-            gap: 10px; margin-bottom: 30px; cursor: pointer;
+            gap: 12px; margin-bottom: 30px; cursor: pointer; user-select: none;
         }
         
-        #remember { 
-            width: 18px; 
-            height: 18px; 
-            cursor: pointer; 
-            accent-color: #fff; /* Ito ang magpapakita ng white check */
-            outline: none;
-            border: 1px solid rgba(255,255,255,0.3);
+        .custom-check {
+            width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 3px; display: flex; align-items: center; justify-content: center;
+            transition: 0.2s; background: transparent;
         }
 
-        .remember-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; color: #888; cursor: pointer; }
+        #remember:checked + .custom-check {
+            background: #fff; border-color: #fff;
+        }
+
+        #remember:checked + .custom-check::after {
+            content: '✓'; color: #000; font-size: 12px; font-weight: 900;
+        }
+
+        .remember-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; color: #888; }
 
         #admin-content { display: none; }
     </style>
@@ -65,16 +56,15 @@
 
     <div id="login-gate" class="max-w-xs mx-auto text-center mt-32">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="login-img">
-        <h1 class="text-xl font-thin mb-10 tracking-[0.5em] uppercase text-zinc-400 text-center">Admin</h1>
-        
-        <div id="error" class="hidden text-red-500 text-[9px] mb-4 tracking-widest uppercase">Auth Failed</div>
+        <h1 class="text-xl font-thin mb-10 tracking-[0.5em] uppercase text-zinc-400">Admin</h1>
         
         <input type="password" id="pass" class="input-field mb-4" placeholder="••••••••">
         
-        <div class="remember-wrap">
-            <input type="checkbox" id="remember">
-            <label for="remember" class="remember-label">Keep session active</label>
-        </div>
+        <label class="remember-wrap">
+            <input type="checkbox" id="remember" class="hidden">
+            <div class="custom-check"></div>
+            <span class="remember-label">Keep session active</span>
+        </label>
 
         <button onclick="checkPass()" class="btn">Login</button>
     </div>
@@ -89,11 +79,12 @@
         <div id="view-u">
             <div class="bg-zinc-950 border border-white/5 p-6 rounded mb-8">
                 <select id="cat" class="input-field mb-4 text-[11px] uppercase tracking-wider bg-black">
+                    <option>Announcement</option>
                     <option>Upcoming Release</option>
                     <option>Live Event</option>
                 </select>
-                <input type="text" id="name" class="input-field mb-4" placeholder="RELEASE TITLE">
-                <input type="text" id="date" class="input-field mb-4" placeholder="DATE (e.g. 2026)">
+                <input type="text" id="name" class="input-field mb-4" placeholder="TITLE">
+                <input type="text" id="date" class="input-field mb-4" placeholder="DATE / YEAR">
                 <button onclick="publish()" class="btn">Update Feed</button>
             </div>
             <div id="update-list" class="space-y-2"></div>
@@ -108,8 +99,8 @@
         const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
         const ADMIN_PASS = "@Aaron123";
 
-        // AUTO-LOGIN LOGIC (Immediate Check)
-        if (localStorage.getItem('admin_access') === 'granted' || sessionStorage.getItem('admin_temp_access') === 'granted') {
+        // AUTO-LOGIN LOGIC - Eto ang magpapanatili sayo sa loob
+        if (localStorage.getItem('aaron_admin_auth') === 'true') {
             showAdmin();
         }
 
@@ -119,15 +110,11 @@
 
             if (passInput.value === ADMIN_PASS) {
                 if (isChecked) {
-                    localStorage.setItem('admin_access', 'granted');
-                } else {
-                    // Temporarily keep logged in even if not checked, until tab is closed
-                    sessionStorage.setItem('admin_temp_access', 'granted');
+                    localStorage.setItem('aaron_admin_auth', 'true');
                 }
                 showAdmin();
             } else {
-                document.getElementById('error').classList.remove('hidden');
-                setTimeout(() => document.getElementById('error').classList.add('hidden'), 2000);
+                alert("Auth Failed");
             }
         }
 
@@ -139,12 +126,10 @@
         }
 
         function logout() {
-            localStorage.removeItem('admin_access');
-            sessionStorage.removeItem('admin_temp_access');
+            localStorage.removeItem('aaron_admin_auth');
             location.reload();
         }
 
-        // --- Tabs and Firebase logic below (remains the same) ---
         function switchTab(t) {
             document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
             document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none';
@@ -184,7 +169,7 @@
                 <div class="bg-zinc-950 p-6 border border-white/5 rounded flex justify-between items-center cursor-pointer" onclick="openChat('${uid}')">
                     <div class="w-2/3">
                         <div class="text-[8px] text-zinc-600 uppercase mb-2">${uid}</div>
-                        <div class="text-[12px] font-light opacity-60 truncate">View history...</div>
+                        <div class="text-[12px] font-light opacity-60">View history...</div>
                     </div>
                 </div>
             `).join('');
