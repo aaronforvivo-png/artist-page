@@ -26,7 +26,7 @@
         #sidebar a { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; margin-bottom: 30px; transition: 0.3s; cursor: pointer; display: block; }
         #sidebar a:hover { color: #fff; transform: translateX(5px); }
 
-        /* Overlay para sa click-outside-to-close */
+        /* Overlay for click-outside-to-close */
         #menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; display: none; opacity: 0; transition: 0.5s; }
         #menu-overlay.active { display: block; opacity: 1; }
 
@@ -45,11 +45,49 @@
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         
         h1.artist-name { font-family: 'Inter', sans-serif; font-weight: 100; }
-        .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin: 0 auto 25px; border: 1px solid var(--border); filter: grayscale(100%); }
+        .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin: 0 auto 25px; border: 1px solid var(--border); filter: grayscale(100%); cursor: pointer; }
+
+        /* Stream Bubble Styling */
+        .profile-container { position: relative; display: inline-block; }
+        #stream-bubble {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #fff;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+        #stream-bubble::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px;
+            border-style: solid;
+            border-color: #fff transparent transparent transparent;
+        }
+        #stream-bubble.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Smooth Genre Animation */
+        #genre-text { display: inline-block; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; transform: translateY(0); }
+
         .btn-minimal { border: 1px solid var(--border); padding: 15px 35px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: white; display: inline-block; margin-top: 25px; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .btn-minimal:hover { background: white; color: black; }
 
-        #genre-text { display: inline-block; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; transform: translateY(0); }
+        /* Updates Section */
+        .updates-section { max-width: 500px; margin: 80px auto; padding: 0 20px; text-align: center; }
+        .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
 
         /* Chat Widget */
         #chat-trigger { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 400; opacity: 0; animation: fadeIn 1s forwards 6s; }
@@ -60,9 +98,6 @@
         .msg.aaron { background: #222; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
         .chat-input { padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
         .chat-input input { background: transparent; border: none; color: #fff; font-size: 12px; flex-grow: 1; outline: none; }
-        
-        .updates-section { max-width: 500px; margin: 80px auto; padding: 0 20px; text-align: center; }
-        .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
@@ -91,7 +126,13 @@
     </aside>
 
     <main class="hero">
-        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="profile-img">
+        <div class="profile-container">
+            <div id="stream-bubble">Stream!!!</div>
+            <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" 
+                 class="profile-img" 
+                 onclick="showStreamBubble()">
+        </div>
+
         <h1 class="artist-name text-7xl tracking-tighter">Aaron</h1>
         <p class="text-[10px] tracking-[8px] text-zinc-500 uppercase mt-4 h-6 overflow-hidden">
             <span id="genre-text">R&B</span>
@@ -122,15 +163,19 @@
         let userId = localStorage.getItem('chat_uid') || 'user_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('chat_uid', userId);
 
-        // REVISED SIDEBAR LOGIC
         function toggleSidebar() { 
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('menu-overlay');
             const btn = document.getElementById('menu-btn');
-            
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
             btn.classList.toggle('open');
+        }
+
+        function showStreamBubble() {
+            const bubble = document.getElementById('stream-bubble');
+            bubble.classList.add('show');
+            setTimeout(() => bubble.classList.remove('show'), 3000);
         }
 
         function comingSoon(item) { alert(`${item} - Coming Soon`); toggleSidebar(); }
