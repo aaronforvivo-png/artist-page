@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
@@ -75,7 +75,7 @@
             list.innerHTML = data ? Object.keys(data).reverse().map(k => `
                 <div class="flex justify-between items-center p-4 bg-zinc-900 rounded-xl text-xs">
                     <span class="font-bold">${data[k].name}</span>
-                    <button onclick="delUpdate('${k}')" class="text-red-500 uppercase font-black">X</button>
+                    <button onclick="delUpdate('${k}')" class="text-red-500 font-black">X</button>
                 </div>
             `).join('') : '';
         }
@@ -92,8 +92,11 @@
                 const lastMsg = msgs[msgs.length - 1];
                 return `
                     <div class="bg-zinc-900 p-5 rounded-2xl border border-white/5">
-                        <div class="text-[9px] text-zinc-500 mb-3 uppercase tracking-widest">Client: ${uid}</div>
-                        <div class="text-sm italic mb-4">"${lastMsg.text}"</div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-[9px] text-zinc-500 uppercase tracking-widest">${uid}</span>
+                            <button onclick="delChat('${uid}')" class="text-[8px] text-red-500 uppercase font-black hover:bg-red-500/10 p-1 rounded">Delete Chat</button>
+                        </div>
+                        <div class="text-sm italic mb-4 font-medium">"${lastMsg.text}"</div>
                         <div class="flex gap-2">
                             <input type="text" id="rep-${uid}" class="input-field mb-0 py-2 text-xs" placeholder="Reply...">
                             <button onclick="sendReply('${uid}')" class="bg-white text-black px-5 rounded-xl text-[10px] font-bold uppercase">Send</button>
@@ -108,6 +111,13 @@
             await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'POST', body: JSON.stringify({ sender: 'aaron', text: text, time: Date.now() }) });
             document.getElementById(`rep-${uid}`).value = '';
             loadInbox();
+        }
+
+        async function delChat(uid) {
+            if(confirm("Permanently delete this conversation?")) {
+                await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' });
+                loadInbox();
+            }
         }
 
         setInterval(() => { if(document.getElementById('admin-content').style.display === 'block') loadInbox(); }, 8000);
