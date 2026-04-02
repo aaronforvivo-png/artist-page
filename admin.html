@@ -2,140 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaron Admin | CMS Login</title>
+    <title>Aaron | Private Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; font-size: 14px; outline: none; }
-        .input-field:focus { border-color: #555; }
-        .btn-primary { background: #fff; color: #000; font-weight: 800; padding: 12px; width: 100%; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; transition: opacity 0.3s; }
-        .btn-primary:hover { opacity: 0.8; }
-        .item-card { background: #0a0a0a; border: 1px solid #111; padding: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
-        #admin-content { display: none; } /* Hidden by default */
+        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; outline: none; }
+        .btn-primary { background: #fff; color: #000; font-weight: 800; padding: 12px; width: 100%; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; }
+        #admin-content { display: none; width: 100%; max-width: 400px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
-
+<body class="p-6">
     <div id="login-gate" class="max-w-xs w-full text-center">
-        <h1 class="text-2xl font-black tracking-tighter mb-6 uppercase">Admin Access</h1>
-        <input type="password" id="admin-pass" class="input-field text-center" placeholder="Enter Password">
-        <button onclick="checkPassword()" class="btn-primary">Login</button>
-        <p id="error-msg" class="text-red-500 text-[10px] mt-4 uppercase tracking-widest hidden">Wrong Password. Access Denied.</p>
+        <h1 class="text-xl font-black mb-6 uppercase tracking-widest text-white/50">Admin Access</h1>
+        <input type="password" id="admin-pass" class="input-field text-center" placeholder="Password">
+        <button onclick="checkPass()" class="btn-primary">Verify</button>
     </div>
 
-    <div id="admin-content" class="max-w-md w-full py-10">
-        <div class="flex justify-between items-end mb-8">
-            <h1 class="text-4xl font-black tracking-tighter">DASHBOARD</h1>
-            <button onclick="logout()" class="text-[10px] text-gray-500 uppercase tracking-widest hover:text-white">Logout</button>
+    <div id="admin-content">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-black italic tracking-tighter">DASHBOARD</h1>
+            <button onclick="location.reload()" class="text-[10px] opacity-30 uppercase">Lock</button>
         </div>
-        
-        <div class="mb-12 bg-black p-6 border border-white/5 rounded-lg shadow-2xl">
-            <label class="text-[10px] uppercase tracking-widest text-gray-500 mb-2 block">Category</label>
+        <div class="bg-zinc-900 p-6 rounded-lg border border-white/10">
             <select id="category" class="input-field">
-                <option value="Upcoming Release">Upcoming Release</option>
-                <option value="Live Event">Live Event</option>
-                <option value="Announcement">Announcement</option>
+                <option>Upcoming Release</option>
+                <option>Live Event</option>
+                <option>Announcement</option>
             </select>
-
-            <label class="text-[10px] uppercase tracking-widest text-gray-500 mb-2 block">Title / Event Name</label>
-            <input type="text" id="name" class="input-field" placeholder="e.g. Midnight Melodies">
-
-            <label class="text-[10px] uppercase tracking-widest text-gray-500 mb-2 block">Date</label>
-            <input type="text" id="date" class="input-field" placeholder="e.g. 12.25.2024">
-
-            <button onclick="addItem()" class="btn-primary mt-2">Publish to Site</button>
+            <input type="text" id="name" class="input-field" placeholder="Title">
+            <input type="text" id="date" class="input-field" placeholder="Date (e.g. 10.20.24)">
+            <button onclick="publish()" id="p-btn" class="btn-primary">Post to Website</button>
         </div>
-
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-[10px] uppercase tracking-[0.4em] text-gray-500">Live Items</h2>
-            <span id="item-count" class="text-[10px] bg-white/10 px-2 py-1 rounded">0</span>
-        </div>
-
-        <div id="admin-list" class="space-y-2">
-            </div>
-        
-        <div class="mt-12 text-center">
-            <a href="index.html" class="text-[9px] text-gray-600 hover:text-white transition uppercase tracking-[0.3em]">— Preview Website —</a>
-        </div>
+        <div id="list" class="mt-8 space-y-2"></div>
     </div>
 
     <script>
-        const THE_PASSWORD = "@Aaron123";
+        // PALITAN MO ITO NG PAREHONG URL
+        const DB_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app/updates.json";
 
-        // Password Check Logic
-        function checkPassword() {
-            const input = document.getElementById('admin-pass').value;
-            const error = document.getElementById('error-msg');
-            
-            if (input === THE_PASSWORD) {
+        function checkPass() {
+            if(document.getElementById('admin-pass').value === "@Aaron123") {
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
-                renderList();
-            } else {
-                error.classList.remove('hidden');
-                document.getElementById('admin-pass').value = '';
-            }
+                loadList();
+            } else { alert("Mali!"); }
         }
 
-        // Allow "Enter" key for login
-        document.getElementById('admin-pass').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') checkPassword();
-        });
-
-        function logout() {
-            location.reload(); // Simple reload to lock the gate again
-        }
-
-        // Data Management Logic
-        function addItem() {
-            const category = document.getElementById('category').value;
+        async function publish() {
+            const btn = document.getElementById('p-btn');
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
+            if(!name || !date) return;
 
-            if(!name || !date) return alert("Please fill all fields!");
+            btn.textContent = "Uploading...";
+            await fetch(`${DB_URL}.json`, {
+                method: 'POST',
+                body: JSON.stringify({ category: document.getElementById('category').value, name, date })
+            });
 
-            const newItem = { id: Date.now(), category, name, date };
-            let data = JSON.parse(localStorage.getItem('aaron_data')) || [];
-            data.push(newItem);
-            localStorage.setItem('aaron_data', JSON.stringify(data));
-            
-            document.getElementById('name').value = '';
-            document.getElementById('date').value = '';
-            renderList();
+            btn.textContent = "Post to Website";
+            document.getElementById('name').value = "";
+            document.getElementById('date').value = "";
+            loadList();
         }
 
-        function deleteItem(id) {
-            if(!confirm("Are you sure you want to remove this?")) return;
-            let data = JSON.parse(localStorage.getItem('aaron_data')) || [];
-            data = data.filter(item => item.id !== id);
-            localStorage.setItem('aaron_data', JSON.stringify(data));
-            renderList();
+        async function loadList() {
+            const res = await fetch(`${DB_URL}.json`);
+            const data = await res.json();
+            const list = document.getElementById('list');
+            list.innerHTML = "";
+            if(!data) return;
+            Object.keys(data).forEach(key => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-white/5 p-3 rounded border border-white/5">
+                        <span class="text-xs opacity-80 uppercase tracking-widest">${data[key].name}</span>
+                        <button onclick="deleteItem('${key}')" class="text-red-800 font-black px-2 hover:text-red-500">X</button>
+                    </div>`;
+            });
         }
 
-        function renderList() {
-            const list = document.getElementById('admin-list');
-            const count = document.getElementById('item-count');
-            const data = JSON.parse(localStorage.getItem('aaron_data')) || [];
-            
-            count.textContent = data.length;
-
-            if(data.length === 0) {
-                list.innerHTML = `<p class="text-center py-10 text-gray-700 text-xs uppercase tracking-widest border border-dashed border-white/5">No active posts</p>`;
-                return;
+        async function deleteItem(key) {
+            if(confirm("Alisin ito?")) {
+                await fetch(`${DB_URL}/${key}.json`, { method: 'DELETE' });
+                loadList();
             }
-
-            list.innerHTML = data.map(item => `
-                <div class="item-card">
-                    <div>
-                        <p class="text-[8px] text-gray-600 uppercase tracking-widest mb-1">${item.category}</p>
-                        <p class="text-sm font-bold tracking-tight">${item.name}</p>
-                        <p class="text-[10px] font-mono text-gray-500 mt-1">${item.date}</p>
-                    </div>
-                    <button onclick="deleteItem(${item.id})" class="text-red-900 hover:text-red-500 text-[9px] font-black uppercase tracking-widest transition-colors">Delete</button>
-                </div>
-            `).sort((a,b) => b.id - a.id).join(''); // Show newest first
         }
     </script>
 </body>
