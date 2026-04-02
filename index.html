@@ -7,89 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --bg: #050505; 
-            --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.3);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-        
-        body { 
-            background-color: var(--bg); color: var(--text-main); 
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; justify-content: flex-start; overflow-x: hidden;
-        }
-
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.03; pointer-events: none; z-index: 100;
-        }
-
-        /* --- SLOT MACHINE INTRO --- */
-        #intro-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 900;
-            display: flex; align-items: center; justify-content: center;
-            animation: fadeOutIntro 0.8s ease-out forwards; animation-delay: 4.5s;
-        }
-        .slot-container {
-            font-size: 8rem; font-weight: 800; line-height: 1;
-            display: flex; gap: 20px; overflow: hidden; height: 8rem;
-        }
+        :root { --bg: #050505; --text-main: #ffffff; --text-dim: rgba(255, 255, 255, 0.3); --border: rgba(255, 255, 255, 0.1); }
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        #intro-overlay { position: fixed; inset: 0; background: #000; z-index: 900; display: flex; align-items: center; justify-content: center; animation: fadeOutIntro 0.8s ease-out forwards; animation-delay: 4.5s; }
+        .slot-container { font-size: 8rem; font-weight: 800; display: flex; gap: 20px; overflow: hidden; height: 8rem; }
         .reel { display: flex; flex-direction: column; animation: spinReel 0.15s linear infinite; }
         .symbol { display: flex; align-items: center; justify-content: center; height: 8rem; width: 6rem; opacity: 0.2; }
         .reel-stop { animation: none !important; transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
         .active-7 { opacity: 1 !important; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
-
         @keyframes spinReel { 0% { transform: translateY(0); } 100% { transform: translateY(-300%); } }
         @keyframes fadeOutIntro { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
-
-        /* --- MAIN CONTENT --- */
-        .hero-container {
-            text-align: center; opacity: 0;
-            animation: fadeInHero 1.2s ease-out forwards; animation-delay: 4.8s; 
-            z-index: 10; margin-top: 15vh; width: 100%; max-width: 600px;
-        }
-        .profile-img {
-            width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
-            margin: 0 auto 30px auto; border: 1px solid var(--border);
-            filter: grayscale(100%); transition: all 0.8s ease;
-        }
+        .hero-container { text-align: center; opacity: 0; animation: fadeInHero 1.2s ease-out forwards; animation-delay: 4.8s; z-index: 10; margin-top: 15vh; width: 100%; max-width: 600px; }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto 30px auto; border: 1px solid var(--border); filter: grayscale(100%); transition: all 0.8s ease; }
         .profile-img:hover { filter: grayscale(0%); border-color: white; }
-
-        #genre-text { transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; display: inline-block; }
-        .genre-fade { opacity: 0; transform: translateY(5px); }
-
-        .btn-minimal {
-            border: 1px solid var(--border); padding: 15px 40px; font-size: 10px;
-            letter-spacing: 0.6em; text-transform: uppercase; text-decoration: none;
-            color: white; transition: all 0.6s ease; display: inline-block; margin-top: 20px;
-        }
+        #genre-text { transition: opacity 0.5s ease; }
+        .btn-minimal { border: 1px solid var(--border); padding: 15px 40px; font-size: 10px; letter-spacing: 0.6em; text-transform: uppercase; color: white; display: inline-block; margin-top: 20px; transition: all 0.6s ease; }
         .btn-minimal:hover { background: white; color: black; transform: scale(1.05); }
-
-        /* --- DYNAMIC SECTION --- */
-        .updates-section {
-            margin-top: 80px; width: 100%; opacity: 0;
-            animation: fadeInHero 1.2s ease-out forwards; animation-delay: 5.5s;
-        }
-        .data-card {
-            border-bottom: 1px solid var(--border); padding: 20px 0;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
+        .updates-section { margin-top: 80px; width: 100%; opacity: 0; animation: fadeInHero 1.2s ease-out forwards; animation-delay: 5.5s; }
+        .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
         @keyframes fadeInHero { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        .nav-fixed {
-            position: fixed; top: 40px; width: 100%; display: flex;
-            justify-content: space-between; padding: 0 50px; opacity: 0;
-            animation: fadeIn 1s ease-out forwards; animation-delay: 5.5s; z-index: 50;
-        }
-        @keyframes fadeIn { to { opacity: 0.4; } }
     </style>
 </head>
 <body>
-
     <div id="intro-overlay">
         <div class="slot-container">
             <div class="reel" id="reel1"><div class="symbol">3</div><div class="symbol">5</div><div class="symbol">7</div><div class="symbol">9</div></div>
@@ -98,89 +37,71 @@
         </div>
     </div>
 
-    <nav class="nav-fixed hidden md:flex">
-        <span class="text-[9px] tracking-[0.8em] uppercase font-semibold">Aaron</span>
-        <span class="text-[9px] tracking-[0.4em] uppercase">Est. 2022</span>
-    </nav>
-
     <main class="hero-container px-6">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" alt="Aaron" class="profile-img">
         <h1 class="text-7xl md:text-9xl font-thin tracking-tighter mb-2">Aaron</h1>
-        
-        <p class="text-[10px] tracking-[0.8em] text-dim uppercase mb-12 h-4">
-            <span id="genre-text">R&B</span>
-        </p>
-
-        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=4U3a3Jj0SEWvl3m16j_JRQ" target="_blank" class="btn-minimal">
-            Listen on Spotify
-        </a>
+        <p class="text-[10px] tracking-[0.8em] text-dim uppercase mb-12 h-4"><span id="genre-text">R&B</span></p>
+        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=4U3a3Jj0SEWvl3m16j_JRQ" target="_blank" class="btn-minimal">Listen on Spotify</a>
 
         <div class="updates-section">
             <h2 class="text-[9px] tracking-[0.6em] uppercase text-dim mb-8">— Upcoming Updates —</h2>
             <div id="dynamic-content">
-                </div>
+                <p class="text-[8px] opacity-20 uppercase tracking-widest">Loading cloud data...</p>
+            </div>
         </div>
     </main>
 
-    <footer class="mt-20 mb-10 w-full text-center opacity-10">
-        <p class="text-[8px] tracking-[0.5em] uppercase">© 2022 Aaron. Independent Artist.</p>
-    </footer>
-
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // 1. Slot Machine Animation Logic
-            const reels = [
-                { id: 'reel1', delay: 2000 },
-                { id: 'reel2', delay: 2600 },
-                { id: 'reel3', delay: 3200 }
-            ];
-            reels.forEach((reelData) => {
-                setTimeout(() => {
-                    const el = document.getElementById(reelData.id);
-                    el.classList.add('reel-stop');
-                    el.style.transform = "translateY(-200%)";
-                    el.children[2].classList.add('active-7');
-                }, reelData.delay);
-            });
+        // PALITAN MO ITO NG URL MO MULA SA FIREBASE
+        const DB_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app/updates.json";
 
-            // 2. Genre Text Cycler
-            const genres = ["R&B", "Soul", "Pop"];
-            let currentIndex = 0;
-            const genreElement = document.getElementById("genre-text");
-            setInterval(() => {
-                genreElement.classList.add("genre-fade");
-                setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % genres.length;
-                    genreElement.textContent = genres[currentIndex];
-                    genreElement.classList.remove("genre-fade");
-                }, 500);
-            }, 3000);
-
-            // 3. Load Dynamic Content from Admin (LocalStorage)
-            function loadUpdates() {
-                const container = document.getElementById('dynamic-content');
-                const data = JSON.parse(localStorage.getItem('aaron_data')) || [];
-                
-                if(data.length === 0) {
-                    container.innerHTML = `<p class="text-[8px] tracking-[0.3em] opacity-20 uppercase italic">TBA (To be announced)</p>`;
+        async function fetchUpdates() {
+            const container = document.getElementById('dynamic-content');
+            try {
+                const response = await fetch(DB_URL);
+                const data = await response.json();
+                if (!data) {
+                    container.innerHTML = `<p class="text-[8px] opacity-20 uppercase italic text-center tracking-widest">TBA</p>`;
                     return;
                 }
-
-                // Sort by ID to show newest entries first
-                container.innerHTML = data.sort((a,b) => b.id - a.id).map(item => `
+                const items = Object.keys(data).map(key => data[key]);
+                container.innerHTML = items.reverse().map(item => `
                     <div class="data-card">
                         <div class="text-left">
                             <p class="text-[7px] text-dim tracking-[0.4em] uppercase mb-1">${item.category}</p>
                             <p class="text-xs font-light tracking-widest uppercase">${item.name}</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-[10px] font-mono tracking-tighter opacity-60">${item.date}</p>
-                        </div>
+                        <div class="text-right"><p class="text-[10px] font-mono opacity-60">${item.date}</p></div>
                     </div>
                 `).join('');
-            }
-            loadUpdates();
+            } catch (e) { container.innerHTML = `<p class="text-[8px] opacity-20 text-center">Sync Error</p>`; }
+        }
+
+        // Slot Machine
+        const reels = [{id:'reel1',d:2000},{id:'reel2',d:2600},{id:'reel3',d:3200}];
+        reels.forEach(r => {
+            setTimeout(() => {
+                const el = document.getElementById(r.id);
+                el.classList.add('reel-stop');
+                el.style.transform = "translateY(-200%)";
+                el.children[2].classList.add('active-7');
+            }, r.d);
         });
+
+        // Genre Cycler
+        const genres = ["R&B", "Soul", "Pop"];
+        let gIdx = 0;
+        setInterval(() => {
+            const el = document.getElementById("genre-text");
+            el.style.opacity = 0;
+            setTimeout(() => {
+                gIdx = (gIdx + 1) % genres.length;
+                el.textContent = genres[gIdx];
+                el.style.opacity = 1;
+            }, 500);
+        }, 3000);
+
+        fetchUpdates();
     </script>
 </body>
 </html>
