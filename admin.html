@@ -2,27 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Aaron | Private Admin</title>
+    <title>Aaron Admin | Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; outline: none; }
-        .btn-primary { background: #fff; color: #000; font-weight: 800; padding: 12px; width: 100%; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-primary { background: #fff; color: #000; font-weight: 800; padding: 12px; width: 100%; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
         #admin-content { display: none; width: 100%; max-width: 400px; }
     </style>
 </head>
 <body class="p-6">
     <div id="login-gate" class="max-w-xs w-full text-center">
-        <h1 class="text-xl font-black mb-6 uppercase tracking-widest text-white/50">Admin Access</h1>
+        <h1 class="text-xl font-black mb-6 uppercase tracking-widest text-white/50">Admin</h1>
         <input type="password" id="admin-pass" class="input-field text-center" placeholder="Password">
         <button onclick="checkPass()" class="btn-primary">Verify</button>
     </div>
 
     <div id="admin-content">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-black italic tracking-tighter">DASHBOARD</h1>
-            <button onclick="location.reload()" class="text-[10px] opacity-30 uppercase">Lock</button>
-        </div>
+        <h1 class="text-2xl font-black mb-6 italic tracking-tighter text-center">DASHBOARD</h1>
         <div class="bg-zinc-900 p-6 rounded-lg border border-white/10">
             <select id="category" class="input-field">
                 <option>Upcoming Release</option>
@@ -30,60 +27,69 @@
                 <option>Announcement</option>
             </select>
             <input type="text" id="name" class="input-field" placeholder="Title">
-            <input type="text" id="date" class="input-field" placeholder="Date (e.g. 10.20.24)">
-            <button onclick="publish()" id="p-btn" class="btn-primary">Post to Website</button>
+            <input type="text" id="date" class="input-field" placeholder="Date (e.g. 12.25.24)">
+            <button onclick="publish()" id="p-btn" class="btn-primary">Add Update</button>
         </div>
         <div id="list" class="mt-8 space-y-2"></div>
     </div>
 
     <script>
-        // PALITAN MO ITO NG PAREHONG URL
-        const DB_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app/updates.json";
+        // SIGURADUHIN NA TAMA ANG URL DITO
+        const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
 
         function checkPass() {
             if(document.getElementById('admin-pass').value === "@Aaron123") {
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
                 loadList();
-            } else { alert("Mali!"); }
+            } else { alert("Wrong Password!"); }
         }
 
         async function publish() {
             const btn = document.getElementById('p-btn');
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
-            if(!name || !date) return;
+            const cat = document.getElementById('category').value;
 
-            btn.textContent = "Uploading...";
-            await fetch(`${DB_URL}.json`, {
-                method: 'POST',
-                body: JSON.stringify({ category: document.getElementById('category').value, name, date })
-            });
+            if(!name || !date) return alert("Paki-fill up!");
 
-            btn.textContent = "Post to Website";
-            document.getElementById('name').value = "";
-            document.getElementById('date').value = "";
-            loadList();
+            btn.textContent = "Saving...";
+            try {
+                const res = await fetch(`${BASE_URL}/updates.json`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: cat, name: name, date: date })
+                });
+                if(res.ok) {
+                    alert("Added successfully!");
+                    document.getElementById('name').value = "";
+                    document.getElementById('date').value = "";
+                    loadList();
+                }
+            } catch (err) { alert("Error saving: " + err); }
+            btn.textContent = "Add Update";
         }
 
         async function loadList() {
-            const res = await fetch(`${DB_URL}.json`);
-            const data = await res.json();
             const list = document.getElementById('list');
-            list.innerHTML = "";
-            if(!data) return;
-            Object.keys(data).forEach(key => {
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white/5 p-3 rounded border border-white/5">
-                        <span class="text-xs opacity-80 uppercase tracking-widest">${data[key].name}</span>
-                        <button onclick="deleteItem('${key}')" class="text-red-800 font-black px-2 hover:text-red-500">X</button>
-                    </div>`;
-            });
+            try {
+                const res = await fetch(`${BASE_URL}/updates.json`);
+                const data = await res.json();
+                list.innerHTML = "";
+                if(!data) return;
+                Object.keys(data).forEach(key => {
+                    list.innerHTML += `
+                        <div class="flex justify-between bg-white/5 p-3 rounded border border-white/5 text-xs mb-2">
+                            <span>${data[key].name}</span>
+                            <button onclick="deleteItem('${key}')" class="text-red-500 font-bold">Delete</button>
+                        </div>`;
+                });
+            } catch (e) { console.log(e); }
         }
 
         async function deleteItem(key) {
-            if(confirm("Alisin ito?")) {
-                await fetch(`${DB_URL}/${key}.json`, { method: 'DELETE' });
+            if(confirm("Delete this?")) {
+                await fetch(`${BASE_URL}/updates/${key}.json`, { method: 'DELETE' });
                 loadList();
             }
         }
