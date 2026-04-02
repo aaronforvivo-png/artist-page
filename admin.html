@@ -2,39 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Aaron Admin | Cloud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aaron Admin | CMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px; outline: none; }
-        .btn-primary { background: #fff; color: #000; font-weight: 800; padding: 12px; width: 100%; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
-        #admin-content { display: none; width: 100%; max-width: 400px; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 18px; margin-bottom: 15px; border-radius: 12px; font-size: 16px; outline: none; }
+        .btn-primary { background: #fff; color: #000; font-weight: 900; padding: 20px; width: 100%; border-radius: 12px; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; }
+        .item-card { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 20px; margin-top: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        #admin-content { display: none; }
     </style>
 </head>
-<body class="p-6">
-    <div id="login-gate" class="max-w-xs w-full text-center">
-        <h1 class="text-xl font-black mb-6 uppercase tracking-widest text-white/50">Admin</h1>
-        <input type="password" id="admin-pass" class="input-field text-center" placeholder="Password">
-        <button onclick="checkPass()" class="btn-primary">Verify</button>
+<body class="min-h-screen flex flex-col items-center p-6">
+
+    <div id="login-gate" class="max-w-xs w-full text-center mt-20">
+        <h1 class="text-3xl font-black mb-10 tracking-tighter uppercase text-zinc-800 italic">Security</h1>
+        <input type="password" id="admin-pass" class="input-field text-center" placeholder="System Password">
+        <button onclick="checkPass()" class="btn-primary">Authenticate</button>
     </div>
 
-    <div id="admin-content">
-        <h1 class="text-2xl font-black mb-6 italic tracking-tighter text-center">DASHBOARD</h1>
-        <div class="bg-zinc-900 p-6 rounded-lg border border-white/10">
-            <select id="category" class="input-field">
-                <option>Upcoming Release</option>
-                <option>Live Event</option>
-                <option>Announcement</option>
-            </select>
-            <input type="text" id="name" class="input-field" placeholder="Title">
-            <input type="text" id="date" class="input-field" placeholder="Date (e.g. 12.25.24)">
-            <button onclick="publish()" id="p-btn" class="btn-primary">Add Update</button>
+    <div id="admin-content" class="w-full max-w-lg">
+        <div class="flex justify-between items-end mb-12 mt-4">
+            <h1 class="text-4xl font-black italic tracking-tighter">AARON</h1>
+            <button onclick="location.reload()" class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Logout</button>
         </div>
-        <div id="list" class="mt-8 space-y-2"></div>
+
+        <div class="bg-zinc-900/50 p-8 rounded-3xl border border-white/5 mb-12">
+            <label class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 block ml-1">Category</label>
+            <select id="category" class="input-field">
+                <option value="Upcoming Release">Upcoming Release</option>
+                <option value="Live Event">Live Event</option>
+                <option value="Announcement">Announcement</option>
+            </select>
+
+            <label class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 block ml-1">Event Title</label>
+            <input type="text" id="name" class="input-field" placeholder="Enter title">
+
+            <label class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 block ml-1">Scheduled Date</label>
+            <input type="text" id="date" class="input-field" placeholder="MM.DD.YY">
+
+            <button onclick="publish()" id="p-btn" class="btn-primary mt-4">Publish Update</button>
+        </div>
+
+        <h2 class="text-[10px] uppercase tracking-[0.4em] text-zinc-600 mb-4 ml-1">Live Database</h2>
+        <div id="list" class="space-y-4 pb-20"></div>
     </div>
 
     <script>
-        // SIGURADUHIN NA TAMA ANG URL DITO
         const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
 
         function checkPass() {
@@ -42,7 +57,7 @@
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
                 loadList();
-            } else { alert("Wrong Password!"); }
+            } else { alert("Access Denied."); }
         }
 
         async function publish() {
@@ -50,45 +65,40 @@
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
             const cat = document.getElementById('category').value;
-
-            if(!name || !date) return alert("Paki-fill up!");
-
-            btn.textContent = "Saving...";
-            try {
-                const res = await fetch(`${BASE_URL}/updates.json`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ category: cat, name: name, date: date })
-                });
-                if(res.ok) {
-                    alert("Added successfully!");
-                    document.getElementById('name').value = "";
-                    document.getElementById('date').value = "";
-                    loadList();
-                }
-            } catch (err) { alert("Error saving: " + err); }
-            btn.textContent = "Add Update";
+            if(!name || !date) return alert("All fields are required.");
+            btn.textContent = "Processing...";
+            await fetch(`${BASE_URL}/updates.json`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category: cat, name: name, date: date })
+            });
+            document.getElementById('name').value = "";
+            document.getElementById('date').value = "";
+            btn.textContent = "Publish Update";
+            loadList();
         }
 
         async function loadList() {
             const list = document.getElementById('list');
-            try {
-                const res = await fetch(`${BASE_URL}/updates.json`);
-                const data = await res.json();
-                list.innerHTML = "";
-                if(!data) return;
-                Object.keys(data).forEach(key => {
-                    list.innerHTML += `
-                        <div class="flex justify-between bg-white/5 p-3 rounded border border-white/5 text-xs mb-2">
-                            <span>${data[key].name}</span>
-                            <button onclick="deleteItem('${key}')" class="text-red-500 font-bold">Delete</button>
-                        </div>`;
-                });
-            } catch (e) { console.log(e); }
+            const res = await fetch(`${BASE_URL}/updates.json`);
+            const data = await res.json();
+            list.innerHTML = "";
+            if(!data) return;
+            Object.keys(data).reverse().forEach(key => {
+                list.innerHTML += `
+                    <div class="item-card">
+                        <div>
+                            <p class="text-[7px] text-zinc-500 uppercase tracking-widest mb-1">${data[key].category}</p>
+                            <p class="text-sm font-bold tracking-tight">${data[key].name}</p>
+                            <p class="text-[10px] font-mono text-zinc-500 mt-1">${data[key].date}</p>
+                        </div>
+                        <button onclick="deleteItem('${key}')" class="text-red-500 text-[10px] font-black uppercase tracking-widest px-4 py-3 bg-red-950/10 rounded-lg">Remove</button>
+                    </div>`;
+            });
         }
 
         async function deleteItem(key) {
-            if(confirm("Delete this?")) {
+            if(confirm("Confirm removal from live site?")) {
                 await fetch(`${BASE_URL}/updates/${key}.json`, { method: 'DELETE' });
                 loadList();
             }
