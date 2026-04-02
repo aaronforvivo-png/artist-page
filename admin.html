@@ -9,16 +9,17 @@
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
         .input-field { background: #111; border: 1px solid #222; color: #fff; width: 100%; padding: 15px; border-radius: 12px; outline: none; margin-bottom: 10px; transition: 0.3s; }
-        .input-field:focus { border-color: #444; }
         .btn { background: #fff; color: #000; font-weight: 800; padding: 15px; width: 100%; border-radius: 12px; text-transform: uppercase; cursor: pointer; }
         
-        /* Profile Image with Shades Effect */
-        .login-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 2px solid #222; 
-                     filter: grayscale(1) brightness(0.6) contrast(1.2); } /* "Shades" filter effect */
+        .login-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 2px solid #222; filter: grayscale(1) brightness(0.6) contrast(1.2); }
 
         .error-msg { color: #ff4444; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: none; }
         
-        /* Shake Animation para sa error */
+        /* Fix para ma-click ang checkbox */
+        .remember-wrap { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; cursor: pointer; }
+        .remember-wrap input { cursor: pointer; width: 16px; height: 16px; accent-color: white; }
+        .remember-wrap label { cursor: pointer; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #555; }
+
         .shake { animation: shake 0.4s; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -45,9 +46,9 @@
         
         <input type="password" id="pass" class="input-field text-center" placeholder="Password">
         
-        <div class="flex items-center justify-center gap-2 mb-6">
-            <input type="checkbox" id="remember" class="accent-white">
-            <label for="remember" class="text-[10px] uppercase tracking-widest text-zinc-500">Remember this device</label>
+        <div class="remember-wrap">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember this device</label>
         </div>
 
         <button onclick="checkPass()" class="btn">Authenticate</button>
@@ -92,20 +93,23 @@
         const ADMIN_PASS = "@Aaron123";
         let currentChatUser = null;
 
-        // Auto-login check
-        window.onload = () => {
-            if(localStorage.getItem('admin_session') === 'active') {
+        // Eto yung logic para sa Auto-login pagka-refresh
+        window.addEventListener('DOMContentLoaded', (event) => {
+            if(localStorage.getItem('admin_logged_in') === 'true') {
                 showAdmin();
             }
-        }
+        });
 
         function checkPass() {
             const passInput = document.getElementById('pass');
             const errorText = document.getElementById('error');
-            const remember = document.getElementById('remember').checked;
+            const isChecked = document.getElementById('remember').checked;
 
             if(passInput.value === ADMIN_PASS) {
-                if(remember) localStorage.setItem('admin_session', 'active');
+                // Pag naka-check, i-save sa browser
+                if(isChecked) {
+                    localStorage.setItem('admin_logged_in', 'true');
+                }
                 showAdmin();
             } else {
                 errorText.style.display = 'block';
@@ -117,14 +121,16 @@
         function showAdmin() {
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            loadUpdates(); loadInbox();
+            loadUpdates(); 
+            loadInbox();
         }
 
         function logout() {
-            localStorage.removeItem('admin_session');
+            localStorage.removeItem('admin_logged_in');
             location.reload();
         }
 
+        // --- THE REST OF THE FUNCTIONS STAY THE SAME ---
         function switchTab(t) {
             document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
             document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none';
