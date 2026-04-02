@@ -10,7 +10,7 @@
         :root { --bg: #050505; --text-dim: rgba(255, 255, 255, 0.3); --border: rgba(255, 255, 255, 0.1); }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
         
-        /* Header Section para sa Menu Button - Hindi na Floating */
+        /* Header Section para sa Menu Button */
         header { width: 100%; display: flex; justify-content: flex-end; padding: 30px; opacity: 0; animation: fadeIn 1s forwards 5s; }
         #menu-btn { cursor: pointer; padding: 10px; z-index: 1100; }
         .bar { width: 25px; height: 1px; background: #fff; margin: 6px 0; transition: 0.4s; }
@@ -34,11 +34,15 @@
         /* Hero Content */
         .hero { text-align: center; opacity: 0; animation: fadeIn 1s forwards 4.8s; margin-top: 5vh; padding: 0 20px; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        
+        /* Font Fix: Siguradong Inter at Sans-Serif */
+        h1.artist-name { font-family: 'Inter', sans-serif; font-weight: 100; }
+
         .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin: 0 auto 25px; border: 1px solid var(--border); filter: grayscale(100%); }
         .btn-minimal { border: 1px solid var(--border); padding: 15px 35px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: white; display: inline-block; margin-top: 25px; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .btn-minimal:hover { background: white; color: black; }
 
-        /* Smooth Genre Animation CSS */
+        /* Smooth Genre Animation */
         #genre-text { 
             display: inline-block; 
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -85,11 +89,11 @@
 
     <main class="hero">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="profile-img">
-        <h1 class="text-7xl font-thin tracking-tighter italic">Aaron</h1>
+        <h1 class="artist-name text-7xl tracking-tighter">Aaron</h1>
         <p class="text-[10px] tracking-[8px] text-zinc-500 uppercase mt-4 h-6 overflow-hidden">
             <span id="genre-text">R&B</span>
         </p>
-        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=db_nzCFWRiyW5JgTRHhARA" target="_blank" class="btn-minimal">Listen on Spotify</a>
+        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd" target="_blank" class="btn-minimal">Listen on Spotify</a>
 
         <div class="updates-section">
             <h2 class="text-[9px] tracking-[6px] text-zinc-600 uppercase mb-8">— Upcoming Updates —</h2>
@@ -158,28 +162,23 @@
             `).join('');
         }
 
-        // SMOOTH GENRE ANIMATION LOGIC
+        // SMOOTH GENRE ANIMATION
         const genres = ["R&B", "Soul", "Pop"];
         let gIdx = 0;
         setInterval(() => {
             const el = document.getElementById("genre-text");
             if(el) {
-                // Step 1: Slide up and Fade out
                 el.style.opacity = "0";
                 el.style.transform = "translateY(-10px)";
-                
                 setTimeout(() => {
-                    // Step 2: Change content and reset position to bottom
                     gIdx = (gIdx + 1) % genres.length;
                     el.textContent = genres[gIdx];
                     el.style.transform = "translateY(10px)";
-                    
-                    // Step 3: Slide in and Fade in
                     setTimeout(() => {
                         el.style.opacity = "1";
                         el.style.transform = "translateY(0)";
                     }, 50);
-                }, 800); // Wait for fade out to finish
+                }, 800);
             }
         }, 4000);
 
