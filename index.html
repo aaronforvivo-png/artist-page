@@ -1,107 +1,80 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaron | Official Artist Page</title>
+    <title>Aaron | Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #050505; --text-main: #ffffff; --text-dim: rgba(255, 255, 255, 0.3); --border: rgba(255, 255, 255, 0.1); }
-        body { background-color: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        #intro-overlay { position: fixed; inset: 0; background: #000; z-index: 900; display: flex; align-items: center; justify-content: center; animation: fadeOutIntro 0.8s ease-out forwards; animation-delay: 4.5s; }
+        :root { --bg: #050505; --text-dim: rgba(255, 255, 255, 0.3); --border: rgba(255, 255, 255, 0.1); }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
+        #intro-overlay { position: fixed; inset: 0; background: #000; z-index: 900; display: flex; align-items: center; justify-content: center; animation: fadeOut 0.8s ease forwards; animation-delay: 4.5s; }
         .slot-container { font-size: 8rem; font-weight: 800; display: flex; gap: 20px; overflow: hidden; height: 8rem; }
-        .reel { display: flex; flex-direction: column; animation: spinReel 0.15s linear infinite; }
-        .symbol { display: flex; align-items: center; justify-content: center; height: 8rem; width: 6rem; opacity: 0.2; }
-        .reel-stop { animation: none !important; transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .active-7 { opacity: 1 !important; text-shadow: 0 0 30px rgba(255,255,255,0.8); }
-        @keyframes spinReel { 0% { transform: translateY(0); } 100% { transform: translateY(-300%); } }
-        @keyframes fadeOutIntro { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
-        .hero-container { text-align: center; opacity: 0; animation: fadeInHero 1.2s ease-out forwards; animation-delay: 4.8s; z-index: 10; margin-top: 15vh; width: 100%; max-width: 600px; }
-        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto 30px auto; border: 1px solid var(--border); filter: grayscale(100%); transition: all 0.8s ease; }
-        .profile-img:hover { filter: grayscale(0%); border-color: white; }
-        #genre-text { transition: opacity 0.5s ease; }
-        .btn-minimal { border: 1px solid var(--border); padding: 15px 40px; font-size: 10px; letter-spacing: 0.6em; text-transform: uppercase; color: white; display: inline-block; margin-top: 20px; transition: all 0.6s ease; }
-        .btn-minimal:hover { background: white; color: black; transform: scale(1.05); }
-        .updates-section { margin-top: 80px; width: 100%; opacity: 0; animation: fadeInHero 1.2s ease-out forwards; animation-delay: 5.5s; }
-        .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
-        @keyframes fadeInHero { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .reel { animation: spin 0.15s linear infinite; display: flex; flex-direction: column; }
+        .symbol { height: 8rem; width: 6rem; display: flex; align-items: center; justify-content: center; opacity: 0.2; }
+        .reel-stop { animation: none !important; transition: transform 0.5s ease; }
+        .active-7 { opacity: 1 !important; text-shadow: 0 0 20px #fff; }
+        @keyframes spin { from { transform: translateY(0); } to { transform: translateY(-300%); } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        .hero { text-align: center; opacity: 0; animation: fadeInHero 1s forwards; animation-delay: 4.8s; margin-top: 15vh; width: 100%; max-width: 500px; padding: 0 20px; }
+        @keyframes fadeInHero { to { opacity: 1; transform: translateY(-10px); } }
+        .profile-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 1px solid var(--border); filter: grayscale(100%); }
+        .btn-minimal { border: 1px solid var(--border); padding: 12px 30px; font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: white; display: inline-block; margin-top: 20px; transition: 0.3s; }
+        .btn-minimal:hover { background: white; color: black; }
+        .data-card { border-bottom: 1px solid var(--border); padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
     <div id="intro-overlay">
         <div class="slot-container">
-            <div class="reel" id="reel1"><div class="symbol">3</div><div class="symbol">5</div><div class="symbol">7</div><div class="symbol">9</div></div>
-            <div class="reel" id="reel2"><div class="symbol">1</div><div class="symbol">4</div><div class="symbol">7</div><div class="symbol">8</div></div>
-            <div class="reel" id="reel3"><div class="symbol">2</div><div class="symbol">6</div><div class="symbol">7</div><div class="symbol">0</div></div>
+            <div class="reel" id="r1"><div class="symbol">3</div><div class="symbol">5</div><div class="symbol">7</div></div>
+            <div class="reel" id="r2"><div class="symbol">1</div><div class="symbol">4</div><div class="symbol">7</div></div>
+            <div class="reel" id="r3"><div class="symbol">2</div><div class="symbol">6</div><div class="symbol">7</div></div>
         </div>
     </div>
 
-    <main class="hero-container px-6">
-        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" alt="Aaron" class="profile-img">
-        <h1 class="text-7xl md:text-9xl font-thin tracking-tighter mb-2">Aaron</h1>
-        <p class="text-[10px] tracking-[0.8em] text-dim uppercase mb-12 h-4"><span id="genre-text">R&B</span></p>
-        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=4U3a3Jj0SEWvl3m16j_JRQ" target="_blank" class="btn-minimal">Listen on Spotify</a>
+    <main class="hero">
+        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="profile-img">
+        <h1 class="text-7xl font-thin tracking-tighter">Aaron</h1>
+        <p class="text-[9px] tracking-[10px] text-zinc-500 uppercase mt-4">R&B / Soul</p>
+        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=4U3a3Jj0SEWvl3m16j_JRQ" target="_blank" class="btn-minimal">Listen</a>
 
-        <div class="updates-section">
-            <h2 class="text-[9px] tracking-[0.6em] uppercase text-dim mb-8">— Upcoming Updates —</h2>
-            <div id="dynamic-content">
-                <p class="text-[8px] opacity-20 uppercase tracking-widest">Loading cloud data...</p>
-            </div>
+        <div class="mt-20">
+            <h2 class="text-[8px] tracking-[5px] text-zinc-600 uppercase mb-6">— Updates —</h2>
+            <div id="content"><p class="text-[8px] opacity-20">Syncing...</p></div>
         </div>
     </main>
 
     <script>
-        // PALITAN MO ITO NG URL MO MULA SA FIREBASE
-        const DB_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app/updates.json";
+        const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app/updates.json";
 
-        async function fetchUpdates() {
-            const container = document.getElementById('dynamic-content');
+        async function load() {
+            const container = document.getElementById('content');
             try {
-                const response = await fetch(DB_URL);
-                const data = await response.json();
-                if (!data) {
-                    container.innerHTML = `<p class="text-[8px] opacity-20 uppercase italic text-center tracking-widest">TBA</p>`;
-                    return;
-                }
-                const items = Object.keys(data).map(key => data[key]);
-                container.innerHTML = items.reverse().map(item => `
-                    <div class="data-card">
-                        <div class="text-left">
-                            <p class="text-[7px] text-dim tracking-[0.4em] uppercase mb-1">${item.category}</p>
-                            <p class="text-xs font-light tracking-widest uppercase">${item.name}</p>
+                const res = await fetch(BASE_URL);
+                const data = await res.json();
+                if(!data) { container.innerHTML = "<p class='text-[8px] opacity-20'>TBA</p>"; return; }
+                const html = Object.keys(data).reverse().map(key => `
+                    <div class="data-card text-left">
+                        <div>
+                            <p class="text-[6px] text-zinc-500 uppercase">${data[key].category}</p>
+                            <p class="text-[11px] tracking-widest uppercase">${data[key].name}</p>
                         </div>
-                        <div class="text-right"><p class="text-[10px] font-mono opacity-60">${item.date}</p></div>
+                        <p class="text-[9px] font-mono opacity-40">${data[key].date}</p>
                     </div>
                 `).join('');
-            } catch (e) { container.innerHTML = `<p class="text-[8px] opacity-20 text-center">Sync Error</p>`; }
+                container.innerHTML = html;
+            } catch(e) { container.innerHTML = "Error"; }
         }
 
-        // Slot Machine
-        const reels = [{id:'reel1',d:2000},{id:'reel2',d:2600},{id:'reel3',d:3200}];
-        reels.forEach(r => {
-            setTimeout(() => {
-                const el = document.getElementById(r.id);
-                el.classList.add('reel-stop');
-                el.style.transform = "translateY(-200%)";
-                el.children[2].classList.add('active-7');
-            }, r.d);
-        });
+        // Slot Machine Stop Logic
+        setTimeout(() => { document.getElementById('r1').classList.add('reel-stop'); document.getElementById('r1').style.transform="translateY(-200%)"; document.getElementById('r1').children[2].classList.add('active-7'); }, 2000);
+        setTimeout(() => { document.getElementById('r2').classList.add('reel-stop'); document.getElementById('r2').style.transform="translateY(-200%)"; document.getElementById('r2').children[2].classList.add('active-7'); }, 2500);
+        setTimeout(() => { document.getElementById('r3').classList.add('reel-stop'); document.getElementById('r3').style.transform="translateY(-200%)"; document.getElementById('r3').children[2].classList.add('active-7'); }, 3000);
 
-        // Genre Cycler
-        const genres = ["R&B", "Soul", "Pop"];
-        let gIdx = 0;
-        setInterval(() => {
-            const el = document.getElementById("genre-text");
-            el.style.opacity = 0;
-            setTimeout(() => {
-                gIdx = (gIdx + 1) % genres.length;
-                el.textContent = genres[gIdx];
-                el.style.opacity = 1;
-            }, 500);
-        }, 3000);
-
-        fetchUpdates();
+        load();
     </script>
 </body>
 </html>
