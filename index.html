@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaron | Official</title>
+    <title>Aaron | Official Artist Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;800&display=swap" rel="stylesheet">
     <style>
@@ -20,10 +19,12 @@
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
         .hero { text-align: center; opacity: 0; animation: fadeInHero 1s forwards; animation-delay: 4.8s; margin-top: 15vh; width: 100%; max-width: 500px; padding: 0 20px; }
         @keyframes fadeInHero { to { opacity: 1; transform: translateY(-10px); } }
-        .profile-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 1px solid var(--border); filter: grayscale(100%); }
-        .btn-minimal { border: 1px solid var(--border); padding: 12px 30px; font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: white; display: inline-block; margin-top: 20px; transition: 0.3s; }
-        .btn-minimal:hover { background: white; color: black; }
-        .data-card { border-bottom: 1px solid var(--border); padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
+        .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin: 0 auto 25px; border: 1px solid var(--border); filter: grayscale(100%); transition: 0.5s; }
+        .profile-img:hover { filter: grayscale(0%); border-color: #fff; }
+        .btn-minimal { border: 1px solid var(--border); padding: 15px 35px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: white; display: inline-block; margin-top: 25px; transition: 0.3s; text-decoration: none; font-weight: 600; }
+        .btn-minimal:hover { background: white; color: black; transform: scale(1.05); }
+        .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        #genre-text { transition: opacity 0.5s; }
     </style>
 </head>
 <body>
@@ -38,12 +39,15 @@
     <main class="hero">
         <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="profile-img">
         <h1 class="text-7xl font-thin tracking-tighter">Aaron</h1>
-        <p class="text-[9px] tracking-[10px] text-zinc-500 uppercase mt-4">R&B / Soul</p>
-        <a href="https://open.spotify.com/artist/39hKl1L86QdZQgXl0qEBWd?si=4U3a3Jj0SEWvl3m16j_JRQ" target="_blank" class="btn-minimal">Listen</a>
+        <p class="text-[10px] tracking-[8px] text-zinc-500 uppercase mt-4 h-4"><span id="genre-text">R&B</span></p>
+        
+        <a href="https://open.spotify.com" target="_blank" class="btn-minimal">
+            Listen on Spotify
+        </a>
 
         <div class="mt-20">
-            <h2 class="text-[8px] tracking-[5px] text-zinc-600 uppercase mb-6">— Updates —</h2>
-            <div id="content"><p class="text-[8px] opacity-20">Syncing...</p></div>
+            <h2 class="text-[9px] tracking-[6px] text-zinc-600 uppercase mb-8">— Upcoming Updates —</h2>
+            <div id="content"><p class="text-[8px] opacity-20 uppercase tracking-widest">Fetching Data...</p></div>
         </div>
     </main>
 
@@ -55,21 +59,32 @@
             try {
                 const res = await fetch(BASE_URL);
                 const data = await res.json();
-                if(!data) { container.innerHTML = "<p class='text-[8px] opacity-20'>TBA</p>"; return; }
+                if(!data) { container.innerHTML = "<p class='text-[8px] opacity-20 tracking-widest uppercase'>To be announced</p>"; return; }
                 const html = Object.keys(data).reverse().map(key => `
                     <div class="data-card text-left">
                         <div>
-                            <p class="text-[6px] text-zinc-500 uppercase">${data[key].category}</p>
-                            <p class="text-[11px] tracking-widest uppercase">${data[key].name}</p>
+                            <p class="text-[7px] text-zinc-500 uppercase tracking-widest">${data[key].category}</p>
+                            <p class="text-[12px] tracking-widest uppercase font-light">${data[key].name}</p>
                         </div>
-                        <p class="text-[9px] font-mono opacity-40">${data[key].date}</p>
+                        <p class="text-[10px] font-mono opacity-40">${data[key].date}</p>
                     </div>
                 `).join('');
                 container.innerHTML = html;
-            } catch(e) { container.innerHTML = "Error"; }
+            } catch(e) { container.innerHTML = "System Offline"; }
         }
 
-        // Slot Machine Stop Logic
+        const genres = ["R&B", "Soul", "Pop"];
+        let gIdx = 0;
+        setInterval(() => {
+            const el = document.getElementById("genre-text");
+            el.style.opacity = 0;
+            setTimeout(() => {
+                gIdx = (gIdx + 1) % genres.length;
+                el.textContent = genres[gIdx];
+                el.style.opacity = 1;
+            }, 500);
+        }, 3000);
+
         setTimeout(() => { document.getElementById('r1').classList.add('reel-stop'); document.getElementById('r1').style.transform="translateY(-200%)"; document.getElementById('r1').children[2].classList.add('active-7'); }, 2000);
         setTimeout(() => { document.getElementById('r2').classList.add('reel-stop'); document.getElementById('r2').style.transform="translateY(-200%)"; document.getElementById('r2').children[2].classList.add('active-7'); }, 2500);
         setTimeout(() => { document.getElementById('r3').classList.add('reel-stop'); document.getElementById('r3').style.transform="translateY(-200%)"; document.getElementById('r3').children[2].classList.add('active-7'); }, 3000);
