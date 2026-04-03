@@ -8,38 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700&display=swap" rel="stylesheet">
     <style>
         body { background: #000; color: #fff; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-        
-        .input-field { 
-            background: transparent; border: 1px solid rgba(255,255,255,0.1); 
-            color: #fff; width: 100%; padding: 12px; border-radius: 4px; 
-            outline: none; font-weight: 300; letter-spacing: 1px; text-align: center;
-        }
-
-        .btn { 
-            background: #fff; color: #000; font-size: 11px; letter-spacing: 3px;
-            font-weight: 700; padding: 14px; width: 100%; border-radius: 4px; 
-            text-transform: uppercase; cursor: pointer; 
-        }
-        
-        .login-img { 
-            width: 90px; height: 90px; border-radius: 50%; object-fit: cover; 
-            margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.1); 
-            filter: grayscale(1) brightness(0.5); 
-        }
-
-        /* CUSTOM CHECKBOX */
+        .input-field { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 100%; padding: 12px; border-radius: 4px; outline: none; font-weight: 300; letter-spacing: 1px; text-align: center; }
+        .btn { background: #fff; color: #000; font-size: 11px; letter-spacing: 3px; font-weight: 700; padding: 14px; width: 100%; border-radius: 4px; text-transform: uppercase; cursor: pointer; }
+        .login-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin: 0 auto 30px; border: 1px solid rgba(255,255,255,0.1); filter: grayscale(1) brightness(0.5); }
         .remember-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 30px; cursor: pointer; user-select: none; }
         .custom-check { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.3); border-radius: 3px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
         #remember:checked + .custom-check { background: #fff; border-color: #fff; }
         #remember:checked + .custom-check::after { content: '✓'; color: #000; font-size: 12px; font-weight: 900; }
         .remember-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; color: #888; }
-
-        /* CHAT BUBBLES */
         .msg { padding: 10px 15px; border-radius: 4px; max-width: 85%; font-size: 13px; font-weight: 300; }
         .msg.fan { background: rgba(255,255,255,0.05); color: #fff; align-self: flex-start; border: 1px solid rgba(255,255,255,0.1); }
         .msg.aaron { background: #fff; color: #000; align-self: flex-end; font-weight: 400; }
-
         #admin-content { display: none; }
+        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body class="p-6">
@@ -57,6 +38,11 @@
     </div>
 
     <div id="admin-content" class="max-w-xl mx-auto">
+        <div class="stat-card mb-8">
+            <p class="text-[8px] tracking-[4px] text-zinc-500 uppercase mb-1">Total Artist Profile Visits</p>
+            <h2 id="visitor-count" class="text-4xl font-thin tracking-tighter">0</h2>
+        </div>
+
         <div class="flex border-b border-white/5 mb-8">
             <div id="tab-u" class="p-4 text-[10px] tracking-[3px] uppercase opacity-100 border-b border-white cursor-pointer" onclick="switchTab('u')">Updates</div>
             <div id="tab-i" class="p-4 text-[10px] tracking-[3px] uppercase opacity-30 cursor-pointer" onclick="switchTab('i')">Messages</div>
@@ -108,10 +94,18 @@
             } else { alert("Auth Failed"); }
         }
 
+        async function loadVisits() {
+            try {
+                const res = await fetch(`${BASE_URL}/visits.json`);
+                const count = await res.json();
+                document.getElementById('visitor-count').textContent = (count || 0).toLocaleString();
+            } catch(e) {}
+        }
+
         function showAdmin() {
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('admin-content').style.display = 'block';
-            loadUpdates(); loadInbox();
+            loadUpdates(); loadInbox(); loadVisits();
         }
 
         function logout() { localStorage.removeItem('aaron_admin_auth'); location.reload(); }
@@ -125,7 +119,6 @@
             document.getElementById('tab-i').style.borderBottom = t === 'i' ? '1px solid white' : 'none';
         }
 
-        // UPDATES
         async function publish() {
             const data = { category: document.getElementById('cat').value, name: document.getElementById('name').value, date: document.getElementById('date').value };
             await fetch(`${BASE_URL}/updates.json`, { method: 'POST', body: JSON.stringify(data) });
@@ -147,7 +140,6 @@
 
         async function delUpdate(k) { await fetch(`${BASE_URL}/updates/${k}.json`, { method: 'DELETE' }); loadUpdates(); }
 
-        // INBOX & CHAT
         async function loadInbox() {
             const res = await fetch(`${BASE_URL}/chats.json`);
             const data = await res.json();
@@ -196,7 +188,13 @@
 
         async function delChat(uid) { if(confirm("Delete conversation?")) { await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' }); loadInbox(); } }
 
-        setInterval(() => { if(activeUid) renderHistory(); }, 5000);
+        setInterval(() => { 
+            if(activeUid) renderHistory(); 
+            if(localStorage.getItem('aaron_admin_auth') === 'true') {
+                loadVisits();
+                if(document.getElementById('view-i').style.display === 'block') loadInbox();
+            }
+        }, 10000);
     </script>
 </body>
 </html>
