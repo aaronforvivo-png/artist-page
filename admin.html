@@ -20,181 +20,65 @@
         .msg.fan { background: rgba(255,255,255,0.05); color: #fff; align-self: flex-start; border: 1px solid rgba(255,255,255,0.1); }
         .msg.aaron { background: #fff; color: #000; align-self: flex-end; font-weight: 400; }
         #admin-content { display: none; }
-        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .stat-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+        .log-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 11px; }
     </style>
 </head>
 <body class="p-6">
-
-    <div id="login-gate" class="max-w-xs mx-auto text-center mt-32">
-        <img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="login-img">
-        <h1 class="text-xl font-thin mb-10 tracking-[0.5em] uppercase text-zinc-400">Admin</h1>
-        <input type="password" id="pass" class="input-field mb-4" placeholder="••••••••">
-        <label class="remember-wrap">
-            <input type="checkbox" id="remember" class="hidden">
-            <div class="custom-check"></div>
-            <span class="remember-label">Keep session active</span>
-        </label>
-        <button onclick="checkPass()" class="btn">Login</button>
-    </div>
-
+    <div id="login-gate" class="max-w-xs mx-auto text-center mt-32"><img src="https://i.scdn.co/image/ab6761610000f178c0d0bd36902abe115eea23ab" class="login-img"><h1 class="text-xl font-thin mb-10 tracking-[0.5em] uppercase text-zinc-400">Admin</h1><input type="password" id="pass" class="input-field mb-4" placeholder="••••••••"><label class="remember-wrap"><input type="checkbox" id="remember" class="hidden"><div class="custom-check"></div><span class="remember-label">Keep session active</span></label><button onclick="checkPass()" class="btn">Login</button></div>
     <div id="admin-content" class="max-w-xl mx-auto">
-        <div class="stat-card mb-8">
-            <p class="text-[8px] tracking-[4px] text-zinc-500 uppercase mb-1">Total Artist Profile Visits</p>
-            <h2 id="visitor-count" class="text-4xl font-thin tracking-tighter">0</h2>
-        </div>
-
-        <div class="flex border-b border-white/5 mb-8">
-            <div id="tab-u" class="p-4 text-[10px] tracking-[3px] uppercase opacity-100 border-b border-white cursor-pointer" onclick="switchTab('u')">Updates</div>
-            <div id="tab-i" class="p-4 text-[10px] tracking-[3px] uppercase opacity-30 cursor-pointer" onclick="switchTab('i')">Messages</div>
-            <button onclick="logout()" class="ml-auto text-[9px] opacity-20 uppercase tracking-widest">Sign Out</button>
-        </div>
-
-        <div id="view-u">
-            <div class="bg-zinc-950 border border-white/5 p-6 rounded mb-8">
-                <select id="cat" class="input-field mb-4 text-[11px] uppercase tracking-wider bg-black">
-                    <option>Announcement</option>
-                    <option>Upcoming Release</option>
-                    <option>Live Event</option>
-                </select>
-                <input type="text" id="name" class="input-field mb-4" placeholder="TITLE">
-                <input type="text" id="date" class="input-field mb-4" placeholder="DATE / YEAR">
-                <button onclick="publish()" class="btn">Update Feed</button>
-            </div>
-            <div id="update-list" class="space-y-2"></div>
-        </div>
-
-        <div id="view-i" style="display:none;">
-            <div id="inbox-list" class="space-y-4"></div>
-        </div>
+        <div class="stat-card mb-8" onclick="openVisitsModal()"><p class="text-[8px] tracking-[4px] text-zinc-500 uppercase mb-1">Total Artist Profile Visits (Tap to view logs)</p><h2 id="visitor-count" class="text-4xl font-thin tracking-tighter">0</h2></div>
+        <div class="flex border-b border-white/5 mb-8"><div id="tab-u" class="p-4 text-[10px] tracking-[3px] uppercase opacity-100 border-b border-white cursor-pointer" onclick="switchTab('u')">Updates</div><div id="tab-i" class="p-4 text-[10px] tracking-[3px] uppercase opacity-30 cursor-pointer" onclick="switchTab('i')">Messages</div><button onclick="logout()" class="ml-auto text-[9px] opacity-20 uppercase tracking-widest">Sign Out</button></div>
+        <div id="view-u"><div class="bg-zinc-950 border border-white/5 p-6 rounded mb-8"><select id="cat" class="input-field mb-4 text-[11px] uppercase tracking-wider bg-black"><option>Announcement</option><option>Upcoming Release</option><option>Live Event</option></select><input type="text" id="name" class="input-field mb-4" placeholder="TITLE"><input type="text" id="date" class="input-field mb-4" placeholder="DATE / YEAR"><button onclick="publish()" class="btn">Update Feed</button></div><div id="update-list" class="space-y-2"></div></div>
+        <div id="view-i" style="display:none;"><div id="inbox-list" class="space-y-4"></div></div>
     </div>
 
-    <div id="chat-modal" class="fixed inset-0 bg-black z-50 hidden flex-col p-6">
-        <div class="flex justify-between items-center border-b border-white/5 pb-6">
-            <span id="active-user-id" class="text-[9px] tracking-[4px] text-zinc-500 uppercase">Message Log</span>
-            <button onclick="closeChat()" class="text-[10px] tracking-widest uppercase opacity-50">Close</button>
-        </div>
-        <div id="modal-history" class="flex-grow overflow-y-auto py-8 flex flex-col gap-4"></div>
-        <div class="pt-6 border-t border-white/5 flex gap-4">
-            <input type="text" id="modal-reply" class="input-field mb-0 flex-grow text-left" placeholder="Type a reply...">
-            <button onclick="sendReply()" class="bg-white text-black px-8 rounded text-[10px] font-bold uppercase tracking-wider">Send</button>
-        </div>
+    <div id="visit-modal" class="fixed inset-0 bg-black z-[60] hidden flex-col p-6">
+        <div class="flex justify-between items-center border-b border-white/5 pb-6"><span class="text-[9px] tracking-[4px] text-zinc-500 uppercase">Traffic Logs</span><div class="flex gap-6"><button onclick="clearVisits()" class="text-[9px] tracking-widest uppercase text-red-500 opacity-70 hover:opacity-100">Clear History</button><button onclick="closeVisitsModal()" class="text-[10px] tracking-widest uppercase opacity-50">Close</button></div></div>
+        <div id="visit-history" class="flex-grow overflow-y-auto py-4"></div>
     </div>
+
+    <div id="chat-modal" class="fixed inset-0 bg-black z-50 hidden flex-col p-6"><div class="flex justify-between items-center border-b border-white/5 pb-6"><span id="active-user-id" class="text-[9px] tracking-[4px] text-zinc-500 uppercase">Message Log</span><button onclick="closeChat()" class="text-[10px] tracking-widest uppercase opacity-50">Close</button></div><div id="modal-history" class="flex-grow overflow-y-auto py-8 flex flex-col gap-4"></div><div class="pt-6 border-t border-white/5 flex gap-4"><input type="text" id="modal-reply" class="input-field mb-0 flex-grow text-left" placeholder="Type a reply..."><button onclick="sendReply()" class="bg-white text-black px-8 rounded text-[10px] font-bold uppercase tracking-wider">Send</button></div></div>
 
     <script>
         const BASE_URL = "https://aaron-site-41381-default-rtdb.asia-southeast1.firebasedatabase.app";
         const ADMIN_PASS = "@Aaron123";
         let activeUid = null;
-
         if (localStorage.getItem('aaron_admin_auth') === 'true') { showAdmin(); }
-
-        function checkPass() {
-            if (document.getElementById('pass').value === ADMIN_PASS) {
-                if (document.getElementById('remember').checked) localStorage.setItem('aaron_admin_auth', 'true');
-                showAdmin();
-            } else { alert("Auth Failed"); }
-        }
-
-        async function loadVisits() {
-            try {
-                const res = await fetch(`${BASE_URL}/visits.json`);
-                const count = await res.json();
-                document.getElementById('visitor-count').textContent = (count || 0).toLocaleString();
-            } catch(e) {}
-        }
-
-        function showAdmin() {
-            document.getElementById('login-gate').style.display = 'none';
-            document.getElementById('admin-content').style.display = 'block';
-            loadUpdates(); loadInbox(); loadVisits();
-        }
-
+        function checkPass() { if (document.getElementById('pass').value === ADMIN_PASS) { if (document.getElementById('remember').checked) localStorage.setItem('aaron_admin_auth', 'true'); showAdmin(); } else { alert("Auth Failed"); } }
+        function showAdmin() { document.getElementById('login-gate').style.display = 'none'; document.getElementById('admin-content').style.display = 'block'; loadUpdates(); loadInbox(); loadVisits(); }
         function logout() { localStorage.removeItem('aaron_admin_auth'); location.reload(); }
 
-        function switchTab(t) {
-            document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none';
-            document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none';
-            document.getElementById('tab-u').style.opacity = t === 'u' ? '1' : '0.3';
-            document.getElementById('tab-u').style.borderBottom = t === 'u' ? '1px solid white' : 'none';
-            document.getElementById('tab-i').style.opacity = t === 'i' ? '1' : '0.3';
-            document.getElementById('tab-i').style.borderBottom = t === 'i' ? '1px solid white' : 'none';
+        // VISITOR LOGS LOGIC
+        async function loadVisits() {
+            try {
+                const res = await fetch(`${BASE_URL}/visit_logs.json`);
+                const data = await res.json();
+                const countEl = document.getElementById('visitor-count');
+                const historyEl = document.getElementById('visit-history');
+                if(!data) { countEl.textContent = "0"; historyEl.innerHTML = "<p class='text-[10px] text-zinc-600 uppercase text-center mt-10'>No logs found</p>"; return; }
+                const logs = Object.values(data).reverse();
+                countEl.textContent = logs.length.toLocaleString();
+                historyEl.innerHTML = logs.map(log => `<div class="log-item"><span class="text-zinc-300 font-mono">${log.ip}</span><span class="text-zinc-600 uppercase tracking-tighter">${log.time}</span></div>`).join('');
+            } catch(e) {}
         }
+        async function clearVisits() { if(confirm("Wipe all visit history?")) { await fetch(`${BASE_URL}/visit_logs.json`, { method: 'DELETE' }); loadVisits(); } }
+        function openVisitsModal() { document.getElementById('visit-modal').classList.remove('hidden'); document.getElementById('visit-modal').classList.add('flex'); }
+        function closeVisitsModal() { document.getElementById('visit-modal').classList.add('hidden'); }
 
-        async function publish() {
-            const data = { category: document.getElementById('cat').value, name: document.getElementById('name').value, date: document.getElementById('date').value };
-            await fetch(`${BASE_URL}/updates.json`, { method: 'POST', body: JSON.stringify(data) });
-            loadUpdates();
-        }
-
-        async function loadUpdates() {
-            const res = await fetch(`${BASE_URL}/updates.json`);
-            const data = await res.json();
-            const list = document.getElementById('update-list');
-            if(!data) return;
-            list.innerHTML = Object.keys(data).reverse().map(k => `
-                <div class="flex justify-between items-center p-5 bg-zinc-950 border border-white/5 rounded">
-                    <span class="text-[10px] uppercase tracking-[2px] font-light text-zinc-300">${data[k].name}</span>
-                    <button onclick="delUpdate('${k}')" class="text-[9px] opacity-30 hover:opacity-100 uppercase">Remove</button>
-                </div>
-            `).join('');
-        }
-
+        function switchTab(t) { document.getElementById('view-u').style.display = t === 'u' ? 'block' : 'none'; document.getElementById('view-i').style.display = t === 'i' ? 'block' : 'none'; document.getElementById('tab-u').style.opacity = t === 'u' ? '1' : '0.3'; document.getElementById('tab-u').style.borderBottom = t === 'u' ? '1px solid white' : 'none'; document.getElementById('tab-i').style.opacity = t === 'i' ? '1' : '0.3'; document.getElementById('tab-i').style.borderBottom = t === 'i' ? '1px solid white' : 'none'; }
+        async function publish() { const data = { category: document.getElementById('cat').value, name: document.getElementById('name').value, date: document.getElementById('date').value }; await fetch(`${BASE_URL}/updates.json`, { method: 'POST', body: JSON.stringify(data) }); loadUpdates(); }
+        async function loadUpdates() { const res = await fetch(`${BASE_URL}/updates.json`); const data = await res.json(); const list = document.getElementById('update-list'); if(!data) return; list.innerHTML = Object.keys(data).reverse().map(k => `<div class="flex justify-between items-center p-5 bg-zinc-950 border border-white/5 rounded"><span class="text-[10px] uppercase tracking-[2px] font-light text-zinc-300">${data[k].name}</span><button onclick="delUpdate('${k}')" class="text-[9px] opacity-30 hover:opacity-100 uppercase">Remove</button></div>`).join(''); }
         async function delUpdate(k) { await fetch(`${BASE_URL}/updates/${k}.json`, { method: 'DELETE' }); loadUpdates(); }
-
-        async function loadInbox() {
-            const res = await fetch(`${BASE_URL}/chats.json`);
-            const data = await res.json();
-            const list = document.getElementById('inbox-list');
-            if(!data) return;
-            list.innerHTML = Object.keys(data).map(uid => {
-                const msgs = Object.values(data[uid]);
-                const lastMsg = msgs[msgs.length - 1];
-                return `
-                    <div class="bg-zinc-950 p-6 border border-white/5 rounded flex justify-between items-center cursor-pointer hover:border-white/20 transition" onclick="openChat('${uid}')">
-                        <div class="w-2/3">
-                            <div class="text-[8px] text-zinc-600 uppercase tracking-widest mb-2">${uid}</div>
-                            <div class="text-[12px] font-light italic truncate opacity-60">"${lastMsg.text}"</div>
-                        </div>
-                        <button onclick="event.stopPropagation(); delChat('${uid}')" class="text-[8px] opacity-30 uppercase tracking-[2px]">Delete</button>
-                    </div>`;
-            }).join('');
-        }
-
-        async function openChat(uid) {
-            activeUid = uid;
-            document.getElementById('active-user-id').textContent = uid;
-            document.getElementById('chat-modal').classList.remove('hidden');
-            document.getElementById('chat-modal').classList.add('flex');
-            renderHistory();
-        }
-
-        async function renderHistory() {
-            if(!activeUid) return;
-            const res = await fetch(`${BASE_URL}/chats/${activeUid}.json`);
-            const data = await res.json();
-            const box = document.getElementById('modal-history');
-            if(!data) return;
-            box.innerHTML = Object.values(data).map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join('');
-            box.scrollTop = box.scrollHeight;
-        }
-
-        async function sendReply() {
-            const input = document.getElementById('modal-reply');
-            if(!input.value.trim() || !activeUid) return;
-            await fetch(`${BASE_URL}/chats/${activeUid}.json`, { method: 'POST', body: JSON.stringify({ sender: 'aaron', text: input.value, time: Date.now() }) });
-            input.value = ''; renderHistory();
-        }
-
+        async function loadInbox() { const res = await fetch(`${BASE_URL}/chats.json`); const data = await res.json(); const list = document.getElementById('inbox-list'); if(!data) return; list.innerHTML = Object.keys(data).map(uid => { const msgs = Object.values(data[uid]); const lastMsg = msgs[msgs.length - 1]; return `<div class="bg-zinc-950 p-6 border border-white/5 rounded flex justify-between items-center cursor-pointer hover:border-white/20 transition" onclick="openChat('${uid}')"><div class="w-2/3"><div class="text-[8px] text-zinc-600 uppercase tracking-widest mb-2">${uid}</div><div class="text-[12px] font-light italic truncate opacity-60">"${lastMsg.text}"</div></div><button onclick="event.stopPropagation(); delChat('${uid}')" class="text-[8px] opacity-30 uppercase tracking-[2px]">Delete</button></div>`; }).join(''); }
+        async function openChat(uid) { activeUid = uid; document.getElementById('active-user-id').textContent = uid; document.getElementById('chat-modal').classList.remove('hidden'); document.getElementById('chat-modal').classList.add('flex'); renderHistory(); }
+        async function renderHistory() { if(!activeUid) return; const res = await fetch(`${BASE_URL}/chats/${activeUid}.json`); const data = await res.json(); const box = document.getElementById('modal-history'); if(!data) return; box.innerHTML = Object.values(data).map(m => `<div class="msg ${m.sender}">${m.text}</div>`).join(''); box.scrollTop = box.scrollHeight; }
+        async function sendReply() { const input = document.getElementById('modal-reply'); if(!input.value.trim() || !activeUid) return; await fetch(`${BASE_URL}/chats/${activeUid}.json`, { method: 'POST', body: JSON.stringify({ sender: 'aaron', text: input.value, time: Date.now() }) }); input.value = ''; renderHistory(); }
         function closeChat() { document.getElementById('chat-modal').classList.add('hidden'); activeUid = null; }
-
         async function delChat(uid) { if(confirm("Delete conversation?")) { await fetch(`${BASE_URL}/chats/${uid}.json`, { method: 'DELETE' }); loadInbox(); } }
 
-        setInterval(() => { 
-            if(activeUid) renderHistory(); 
-            if(localStorage.getItem('aaron_admin_auth') === 'true') {
-                loadVisits();
-                if(document.getElementById('view-i').style.display === 'block') loadInbox();
-            }
-        }, 10000);
+        setInterval(() => { if(activeUid) renderHistory(); if(localStorage.getItem('aaron_admin_auth') === 'true') { loadVisits(); if(document.getElementById('view-i').style.display === 'block') loadInbox(); } }, 10000);
     </script>
 </body>
 </html>
