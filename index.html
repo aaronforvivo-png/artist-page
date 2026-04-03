@@ -15,7 +15,6 @@
         #menu-btn { cursor: pointer; padding: 10px; transition: 0.3s; }
         .bar { width: 25px; height: 1px; background: #fff; margin: 6px 0; transition: 0.4s; }
         
-        /* Burger Animation to 'X' */
         #menu-btn.open .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         #menu-btn.open .bar:nth-child(2) { opacity: 0; }
         #menu-btn.open .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -26,7 +25,6 @@
         #sidebar a { font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; margin-bottom: 30px; transition: 0.3s; cursor: pointer; display: block; }
         #sidebar a:hover { color: #fff; transform: translateX(5px); }
 
-        /* Overlay for click-outside-to-close */
         #menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; display: none; opacity: 0; transition: 0.5s; }
         #menu-overlay.active { display: block; opacity: 1; }
 
@@ -79,13 +77,10 @@
         }
         #stream-bubble.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Smooth Genre Animation */
         #genre-text { display: inline-block; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; transform: translateY(0); }
-
         .btn-minimal { border: 1px solid var(--border); padding: 15px 35px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: white; display: inline-block; margin-top: 25px; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .btn-minimal:hover { background: white; color: black; }
 
-        /* Updates Section */
         .updates-section { max-width: 500px; margin: 80px auto; padding: 0 20px; text-align: center; }
         .data-card { border-bottom: 1px solid var(--border); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
 
@@ -178,6 +173,15 @@
             setTimeout(() => bubble.classList.remove('show'), 3000);
         }
 
+        // VISITOR TRACKER
+        async function trackVisit() {
+            try {
+                const res = await fetch(`${BASE_URL}/visits.json`);
+                const count = await res.json() || 0;
+                await fetch(`${BASE_URL}/visits.json`, { method: 'PUT', body: JSON.stringify(count + 1) });
+            } catch(e) { console.error("Tracker offline"); }
+        }
+
         function comingSoon(item) { alert(`${item} - Coming Soon`); toggleSidebar(); }
         
         function toggleChat() { 
@@ -220,7 +224,6 @@
             `).join('');
         }
 
-        // SMOOTH GENRE ANIMATION
         const genres = ["R&B", "Soul", "Pop"];
         let gIdx = 0;
         setInterval(() => {
@@ -243,8 +246,14 @@
         setTimeout(() => { 
             ['r1','r2','r3'].forEach((id, i) => {
                 const el = document.getElementById(id);
-                setTimeout(() => { el.classList.add('reel-stop'); el.style.transform="translateY(-200%)"; el.children[2].classList.add('active-7'); }, 2000 + (i*500));
+                setTimeout(() => { 
+                    el.classList.add('reel-stop'); 
+                    el.style.transform="translateY(-200%)"; 
+                    el.children[2].classList.add('active-7'); 
+                }, 2000 + (i*500));
             });
+            // Track visit after intro
+            setTimeout(trackVisit, 1000);
         }, 100);
 
         loadUpdates();
